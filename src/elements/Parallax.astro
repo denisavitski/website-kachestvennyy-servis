@@ -1,0 +1,56 @@
+---
+export interface Props {
+  class?: string
+  offset?: number
+  vector?: 'up' | 'down'
+}
+
+const { class: className, offset = 0.2, vector = 'down', ...rest } = Astro.props
+---
+
+<e-segment
+  {...rest}
+  class:list={['parallax', className]}
+  style={{ '--offset': offset }}
+  data-vector={vector}
+>
+  <div class="parallax__content">
+    <slot />
+  </div>
+</e-segment>
+
+<style is:global>
+  .parallax {
+    position: relative;
+
+    --progress-var: progress;
+    --start-offset: calc(var(--viewport-height) * -1);
+    --distance-offset: var(--viewport-height);
+    --extra-height: calc(var(--height, 100%) * var(--offset, 0));
+
+    display: block;
+
+    width: var(--width, 100%);
+    height: var(--height, 100%);
+
+    overflow: hidden;
+  }
+
+  .parallax__content {
+    position: absolute;
+    left: 0;
+
+    width: 100%;
+    height: calc(100% + var(--extra-height));
+  }
+
+  .parallax[data-vector='down'] .parallax__content {
+    top: calc(var(--extra-height) * -1);
+    transform: translateY(calc(var(--extra-height) * var(--progress, 0)));
+  }
+
+  .parallax[data-vector='up'] .parallax__content {
+    top: 0;
+    transform: translateY(calc(var(--extra-height) * var(--progress, 0) * -1));
+  }
+</style>

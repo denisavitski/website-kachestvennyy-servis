@@ -1,0 +1,31 @@
+{
+  "name": "website-kachestvennyy-servis",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "NODE_ENV=development astro dev --host",
+    "start": "astro dev",
+    "build": "astro check && NODE_ENV=production astro build",
+    "build-and-format": "npm run build && npm run format-dist",
+    "bap": "NODE_ENV=production npm run build-and-format && npm run preview",
+    "preview": "astro preview",
+    "astro": "astro",
+    "optimize": "tsx ./optimize/index.ts",
+    "format-dist": "prettier --write \"dist/**/*.html\" --ignore-path=.prettierignore --config=.prettierrc.prod.json"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@types/node": "^22.9.0",
+    "astro": "^4.16.13",
+    "automizer": "^0.3.5",
+    "postcss-preset-env": "^10.1.1",
+    "prettier": "^3.3.3",
+    "prettier-plugin-astro": "^0.14.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11"
+  },
+  "dependencies": {
+    "aptechka": "^0.45.1"
+  }
+}

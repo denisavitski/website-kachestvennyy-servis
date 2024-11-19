@@ -1,0 +1,43 @@
+<!-- SINGLETON -->
+<e-custom-scrollbar class="scrollbar">
+  <div
+    data-thumb
+    class="scrollbar__thumb">
+  </div>
+</e-custom-scrollbar>
+
+<style is:global>
+  .scrollbar {
+    position: fixed;
+    top: 0;
+    right: 0;
+
+    z-index: var(--z-scrollbar);
+
+    width: 0.5rem;
+    height: 100%;
+
+    background-color: var(--color-grey-2);
+
+    transition: opacity 0.5s;
+    opacity: 0;
+
+    user-select: none;
+  }
+
+  .scrollbar.active,
+  .scrollbar:hover {
+    opacity: 1;
+  }
+
+  .scrollbar__thumb {
+    width: 100%;
+    background-color: var(--color-white-1);
+  }
+
+  @media (max-width: 1024px) {
+    .scrollbar {
+      display: none;
+    }
+  }
+</style>

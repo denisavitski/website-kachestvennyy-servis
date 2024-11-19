@@ -1,0 +1,36 @@
+---
+import { getHref } from '@utils/url'
+import MediaWrapper from './MediaWrapper.astro'
+import { omit } from 'aptechka/utils'
+
+export interface ImageDataProps {
+  src?: string | undefined
+  alt?: string | undefined
+}
+
+export interface Props extends ImageDataProps {
+  class?: string | undefined
+  lazy?: boolean | undefined
+  cover?: boolean | undefined
+  contain?: boolean | undefined
+  lazyBackground?: boolean | undefined
+  rounded?: boolean | undefined
+}
+
+const { class: className, src = '/images/dev/image/dark/1.jpg', alt = 'Альтернативный текст', lazy, cover, contain, lazyBackground, ...rest } = Astro.props
+---
+
+<MediaWrapper
+  class:list={['media-wrapper', className]}
+  tag={'image-cloak'}
+  {...omit(rest, ['slot'] as any)}
+  cover={cover}
+  contain={contain}
+  lazyBackground={lazyBackground}>
+  <img
+    src={getHref(src)}
+    {alt}
+    decoding="async"
+    loading={lazy ? 'lazy' : 'eager'}
+  /></MediaWrapper
+>

@@ -1,0 +1,162 @@
+---
+import CommonModal from '@elements/CommonModal.astro'
+import Image from '@elements/Image.astro'
+
+export const modal = '#form-answer'
+---
+
+<!-- SINGLETON -->
+<CommonModal
+  tag="e-form-answer"
+  id="form-answer"
+  class="form-answer"
+>
+  <div class="form-answer__content">
+    <Image
+      class="form-answer__image"
+      src="/images/illustrations/successful-submission.svg"
+      lazy
+      lazyBackground
+      cover
+      rounded
+    />
+
+    <div class="form-answer__text">
+      <div class="form-answer__title">Title</div>
+      <div class="form-answer__message">Message</div>
+    </div>
+  </div>
+</CommonModal>
+
+<style is:global>
+  .form-answer {
+    --dominance: 1;
+
+    z-index: var(--z-form-answer);
+  }
+
+  .form-answer__content {
+    width: 96.4rem;
+    min-height: 42rem;
+    padding: 1.6rem;
+
+    display: flex;
+
+    border-radius: 0.8rem;
+    background-color: var(--color-white-1);
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      width: calc(100% - var(--screen-horisontal-padding) * 2);
+      margin: 0 auto;
+      min-height: 47.3rem;
+    }
+  }
+
+  .form-answer__image {
+    --lazy-background: var(--color-white-2);
+
+    flex-shrink: 0;
+
+    width: 47.9rem;
+    height: 100%;
+
+    margin-right: 2.4rem;
+
+    @media (max-width: 768px) {
+      width: 100%;
+      height: 25.6rem;
+      margin-right: 0rem;
+      margin-bottom: 2.4rem;
+    }
+  }
+
+  .form-answer__text {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    color: var(--color-grey-1);
+
+    @media (max-width: 768px) {
+      padding: 0;
+    }
+  }
+
+  .form-answer__title {
+    font-family: 'Code', sans-serif;
+    font-size: 4.8rem;
+    font-weight: 400;
+    line-height: 120%;
+    text-transform: uppercase;
+
+    margin-bottom: 2.4rem;
+
+    text-align: center;
+
+    @media (max-width: 768px) {
+      font-size: 2.8rem;
+      margin-bottom: 1.6rem;
+    }
+  }
+
+  .form-answer__message {
+    font-size: 2.4rem;
+    font-weight: 300;
+    text-align: center;
+
+    margin-bottom: 5.6rem;
+
+    @media (max-width: 768px) {
+      font-size: 1.6rem;
+      margin-bottom: 2.4rem;
+    }
+  }
+
+  .form-answer__close-button {
+    --type: close;
+  }
+</style>
+
+<script>
+  import { PopoverElement } from 'aptechka/popover'
+
+  export class FormAnswerElement extends PopoverElement {
+    #titleElement: HTMLElement | null = null
+    #messageElement: HTMLElement | null = null
+
+    public setText(title: string, message: string) {
+      if (this.#titleElement) {
+        this.#titleElement.innerHTML = title
+      }
+
+      if (this.#messageElement) {
+        this.#messageElement.innerHTML = message
+      }
+    }
+
+    protected override connectedCallback() {
+      super.connectedCallback()
+
+      this.#titleElement = this.querySelector('.form-answer__title')
+      this.#messageElement = this.querySelector('.form-answer__message')
+    }
+
+    protected override disconnectedCallback() {
+      super.disconnectedCallback()
+    }
+  }
+
+  if (!customElements.get('e-form-answer')) {
+    customElements.define('e-form-answer', FormAnswerElement)
+  }
+
+  declare global {
+    interface HTMLElementTagNameMap {
+      'e-form-answer': FormAnswerElement
+    }
+  }
+</script>

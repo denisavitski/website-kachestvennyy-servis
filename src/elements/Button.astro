@@ -1,0 +1,211 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import Icon from './Icon.astro'
+
+export interface Props extends HTMLAttributes<any> {
+  class?: string
+  tag?: string
+  theme?: 'default' | 'outlined' | 'toggle' | 'message'
+  modal?: string
+  icon?: string
+  href?: string
+  name?: string
+  checked?: boolean
+}
+
+const {
+  class: className,
+  tag = 'button',
+  theme = 'default',
+  modal,
+  href,
+  name,
+  checked,
+  ...rest
+} = Astro.props
+
+let Tag = 'button' as any
+
+if (modal) {
+  Tag = 'e-popover-button'
+} else if (href) {
+  Tag = 'a'
+} else if (theme === 'toggle') {
+  Tag = 'label'
+}
+---
+
+<Tag
+  {...rest}
+  target={modal}
+  class:list={['primary-button', className]}
+  data-theme={theme}
+>
+  {
+    theme === 'toggle' && (
+      <input
+        class="visually-hidden primary-button__input"
+        type="radio"
+        {checked}
+        {name}
+      />
+    )
+  }
+
+  <span class="primary-button__inner">
+    <span class="font-button primary-button__name"><slot>Кнопка</slot></span>
+
+    {
+      theme === 'message' && (
+        <Icon
+          class="primary-button__icon"
+          name="airplane"
+        />
+      )
+    }
+  </span>
+</Tag>
+
+<style is:global>
+  .primary-button {
+    flex-shrink: 0;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 7rem;
+
+    &[data-theme='default'] {
+      height: 8rem;
+    }
+
+    &[data-theme='outlined'] {
+      height: 8rem;
+    }
+
+    &[data-theme='message'] {
+      height: 7.4rem;
+    }
+
+    &[data-theme='toggle'] {
+      height: 7.5rem;
+    }
+
+    @media (max-width: 768px) {
+      &[data-theme='default'] {
+        height: 7.5rem;
+      }
+
+      &[data-theme='outlined'] {
+        height: 7.5rem;
+      }
+
+      &[data-theme='toggle'] {
+        height: 7.5rem;
+      }
+    }
+  }
+
+  .primary-button__inner {
+    padding: 0 3.5rem;
+    height: 100%;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 7rem;
+
+    transition-duration: var(--duration-button);
+    transition-property: opacity, color, background-color, border-color;
+
+    .primary-button[data-theme='default'] & {
+      height: 8rem;
+
+      background-color: var(--color-button);
+      color: var(--color-surface);
+    }
+
+    .primary-button[data-theme='outlined'] & {
+      background-color: var(--color-surface);
+      color: var(--color-primary);
+      border: 0.2rem solid var(--color-button);
+    }
+
+    .primary-button[data-theme='message'] & {
+      background-color: var(--color-button);
+      color: var(--color-surface);
+    }
+
+    .primary-button[data-theme='toggle'] & {
+      background-color: var(--color-background);
+      color: var(--color-primary);
+      border: 0.2rem solid var(--color-button);
+    }
+
+    .primary-button[data-theme='default'][disabled] &,
+    .primary-button[data-theme='default'].disabled &,
+    .primary-button[data-theme='outlined'][disabled] &,
+    .primary-button[data-theme='outlined'].disabled &,
+    .primary-button[data-theme='message'][disabled] &,
+    .primary-button[data-theme='message'].disabled &,
+    .primary-button[data-theme='toggle'][disabled] &,
+    .primary-button[data-theme='toggle'].disabled & {
+      background-color: var(--color-grey-light);
+      color: var(--color-grey-dark);
+    }
+
+    .primary-button[data-theme='outlined'][disabled] &,
+    .primary-button[data-theme='outlined'].disabled & {
+      border-color: var(--color-grey-dark);
+    }
+
+    .primary-button[data-theme='toggle']:not([disabled]) .primary-button__input:checked ~ &,
+    .primary-button[data-theme='toggle']:not(.disabled) .primary-button__input:checked ~ & {
+      background-color: var(--color-button);
+      color: var(--color-surface);
+    }
+
+    @media (hover: hover) {
+      .primary-button[data-theme='default']:not(:active):not([disabled]):hover &,
+      .primary-button[data-theme='default']:not(:active):not(.disabled):hover &,
+      .primary-button[data-theme='message']:not(:active):not([disabled]):hover &,
+      .primary-button[data-theme='message']:not(:active):not(.disabled):hover & {
+        background-color: var(--color-primary);
+      }
+
+      .primary-button[data-theme='outlined']:not(:active):not([disabled]):hover &,
+      .primary-button[data-theme='outlined']:not(:active):not(.disabled):hover & {
+        background-color: var(--color-background);
+      }
+
+      .primary-button[data-theme='toggle']:not(:active):not([disabled]):hover &,
+      .primary-button[data-theme='toggle']:not(:active):not(.disabled):hover & {
+        background-color: var(--color-button);
+        color: var(--color-surface);
+      }
+    }
+  }
+
+  .primary-button__name {
+    font-size: 1.8rem;
+
+    @media (max-width: 768px) {
+      font-size: 1.6rem;
+    }
+  }
+
+  .primary-button__icon {
+    width: 3.4rem;
+    height: 3.4rem;
+    margin-left: 1rem;
+
+    fill: var(--color-surface);
+
+    .primary-button[disabled] &,
+    .primary-button.disabled & {
+      fill: var(--color-grey-dark);
+    }
+  }
+</style>

@@ -1,0 +1,306 @@
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 400;
+  src: url('/fonts/Montserrat/Montserrat-Regular.ttf');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 500;
+  src: url('/fonts/Montserrat/Montserrat-Medium.ttf');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'OpenSans';
+  font-weight: 400;
+  src: url('/fonts/OpenSans/OpenSans-Regular.ttf');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'OpenSans';
+  font-weight: 600;
+  src: url('/fonts/OpenSans/OpenSans-SemiBold.ttf');
+  font-display: swap;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+:root {
+  --color-primary: #001e4f;
+  --color-surface: #fafcff;
+  --color-button: #7091c7;
+  --color-background: #edf4ff;
+  --color-accent: #ffb81c;
+  --color-grey-light: #bababa;
+  --color-grey-dark: #8c8c8c;
+
+  --screen-horisontal-padding: 14rem;
+  --section-vertical-padding: 7.5rem;
+
+  --z-common-modal: 102;
+  --z-header: 100;
+
+  --header-height: 10.6rem;
+
+  --duration-button: 0.25s;
+
+  --opacity-hover: 0.4;
+
+  --viewport-height: var(--inner-height, 100vh);
+  --viewport-width: var(--inner-width, 100vw);
+
+  --ease-in-sine: cubic-bezier(0.12, 0, 0.39, 0);
+  --ease-out-sine: cubic-bezier(0.61, 1, 0.88, 1);
+  --ease-in-out-sine: cubic-bezier(0.37, 0, 0.63, 1);
+
+  --ease-in-quad: cubic-bezier(0.11, 0, 0.5, 0);
+  --ease-out-quad: cubic-bezier(0.5, 1, 0.89, 1);
+  --ease-in-out-quad: cubic-bezier(0.45, 0, 0.55, 1);
+
+  --ease-in-cubic: cubic-bezier(0.32, 0, 0.67, 0);
+  --ease-out-cubic: cubic-bezier(0.33, 1, 0.68, 1);
+  --ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --ease-in-quart: cubic-bezier(0.5, 0, 0.75, 0);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+
+  --ease-in-quint: cubic-bezier(0.64, 0, 0.78, 0);
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
+
+  --ease-in-expo: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-expo: cubic-bezier(0.87, 0, 0.13, 1);
+
+  --ease-in-circ: cubic-bezier(0.55, 0, 1, 0.45);
+  --ease-out-circ: cubic-bezier(0, 0.55, 0.45, 1);
+  --ease-in-out-circ: cubic-bezier(0.85, 0, 0.15, 1);
+
+  --ease-in-back: cubic-bezier(0.36, 0, 0.66, -0.56);
+  --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-in-out-back: cubic-bezier(0.68, -0.6, 0.32, 1.6);
+
+  @media (max-width: 768px) {
+    --screen-horisontal-padding: 2rem;
+    --section-vertical-padding: 6.6rem;
+    --header-height: 6.6rem;
+  }
+
+  @supports (height: 100dvh) {
+    :root {
+      --viewport-height: 100dvh;
+    }
+  }
+}
+
+html {
+  font-size: calc(100vw / 1920 * 10);
+
+  @media (max-width: 768px) {
+    font-size: calc(100vw / 500 * 10);
+  }
+
+  @media (max-width: 600px) {
+    font-size: calc(100vw / 375 * 10);
+  }
+}
+
+body {
+  font-family: 'OpenSans', sans-serif;
+
+  color: var(--color-primary);
+
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+input {
+  font-family: inherit;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+a {
+  font-family: inherit;
+  color: inherit;
+  text-decoration: none;
+}
+
+a,
+button,
+e-scroll-set-button,
+e-scroll-step-button,
+e-popover-button {
+  cursor: pointer;
+  white-space: normal;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  max-width: 100%;
+}
+
+img {
+  width: 100%;
+  height: 100%;
+}
+
+picture {
+  display: contents;
+}
+
+.visually-hidden {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  width: 1px;
+  height: 1px;
+
+  opacity: 0;
+
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+button,
+e-popover-button {
+  cursor: pointer;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+img {
+  display: block;
+}
+
+.word,
+.letter {
+  white-space: pre-wrap;
+  display: inline-flex;
+}
+
+.hidden-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hidden-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.font-h1 {
+  font-family: 'Montserrat';
+  font-size: 5.7rem;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.font-h2 {
+  font-family: 'Montserrat';
+  font-size: 4.8rem;
+  font-weight: 500;
+  line-height: normal;
+}
+
+.font-h3 {
+  font-family: 'Montserrat';
+  font-size: 3.2rem;
+  font-weight: 500;
+  line-height: normal;
+}
+
+.font-p1 {
+  font-size: 2.5rem;
+  font-weight: 400;
+  line-height: 140%;
+}
+
+.font-p2 {
+  font-size: 2rem;
+  font-weight: 400;
+  line-height: 150%;
+}
+
+.font-p3 {
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 140%;
+}
+
+.font-p4 {
+  font-size: 1.3rem;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.font-button {
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 150%;
+}
+
+@media (max-width: 768px) {
+  .font-mob-h1 {
+    font-family: 'Montserrat';
+    font-size: 3.4rem;
+    font-weight: 400;
+    line-height: normal;
+  }
+
+  .font-mob-h2 {
+    font-family: 'Montserrat';
+    font-size: 3rem;
+    font-weight: 500;
+    line-height: normal;
+  }
+
+  .font-mob-h3 {
+    font-family: 'Montserrat';
+    font-size: 2.5rem;
+    font-weight: 400;
+    line-height: normal;
+  }
+
+  .font-mob-p1 {
+    font-size: 2rem;
+    font-weight: 400;
+    line-height: normal;
+  }
+
+  .font-mob-p2 {
+    font-size: 1.8rem;
+    font-weight: 400;
+    line-height: normal;
+  }
+
+  .font-mob-p3 {
+    font-size: 1.5rem;
+    font-weight: 400;
+    line-height: normal;
+  }
+}

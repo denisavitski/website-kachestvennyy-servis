@@ -1,0 +1,201 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { type Props as InputProps } from '@elements/Input.astro'
+
+export interface CommmonFormProps {
+  inputs: Array<InputProps>
+  submitButton?: string
+  terms?: string
+  successTitle?: string
+  successMessage?: string
+  errorMessage?: string
+}
+
+export interface Props extends HTMLAttributes<'div'> {
+  name?: string
+  url?: string
+  successTitle?: string | undefined | false
+  successMessage?: string | undefined | false
+  errorMessage?: string | undefined | false
+  reusable?: boolean
+}
+
+const {
+  name = 'form',
+  url = '/test',
+  successTitle,
+  successMessage,
+  errorMessage,
+  reusable = true,
+  ...rest
+} = Astro.props
+---
+
+<!-- 
+  Если указан url отличный от /test, данные из формы отправятся по нему, 
+  и по успешному завершению откроется модалка. 
+-->
+<e-form
+  {...rest}
+  success-title={successTitle}
+  success-message={successMessage}
+  error-message={errorMessage}
+  {name}
+  {url}
+  {reusable}
+>
+  <form>
+    <slot />
+  </form>
+</e-form>
+
+<style is:global>
+  e-form {
+    display: block;
+  }
+
+  e-form form {
+    display: contents;
+  }
+</style>
+
+<script>
+  import { dispatchEvent } from 'aptechka/utils'
+
+  export class FormElement extends HTMLElement {
+    #formElement: HTMLFormElement | null = null
+    #buttonElement: HTMLButtonElement | null = null
+    #inputElements: Array<HTMLInputElement> | null = null
+    #sended = false
+
+    protected connectedCallback() {
+      this.#formElement = this.querySelector('form')
+
+      if (this.#formElement) {
+        this.#formElement.addEventListener('submit', this.#submitListener)
+
+        this.#inputElements = [...this.#formElement.querySelectorAll('input')]
+
+        this.#inputElements.forEach((inputElement) => {
+          inputElement.addEventListener('input', this.#inputListener)
+        })
+
+        this.#buttonElement = this.#formElement.querySelector(
+          'button[type="submit"]',
+        )
+
+        this.#inputListener()
+      }
+    }
+
+    protected disconnectedCallback() {
+      this.#inputElements?.forEach((inputElement) =>
+        inputElement.removeEventListener('input', this.#inputListener),
+      )
+
+      this.#formElement?.removeEventListener('submit', this.#submitListener)
+    }
+
+    #submitListener = async (e: SubmitEvent) => {
+      const url = this.getAttribute('url')
+
+      if (!url) {
+        return
+      }
+
+      e.preventDefault()
+
+      const isReusable = this.hasAttribute('reusable')
+
+      if (this.#sended && !isReusable) {
+        return
+      }
+
+      this.#sended = true
+
+      const formData = new FormData(this.#formElement!)
+      formData.set('form-name', this.getAttribute('name') || 'unknown')
+
+      for (let pair of formData) {
+        console.log(pair[0] + ', ' + pair[1])
+      }
+
+      this.classList.add('pending')
+
+      try {
+        if (url === '/test') {
+          await new Promise<void>((res) => {
+            setTimeout(() => {
+              res()
+              this.classList.add('success')
+            }, 50)
+          })
+        } else {
+          await fetch(url, {
+            method: 'POST',
+            body: formData,
+          })
+        }
+
+        const answerElement = document.querySelector('e-form-answer')
+
+        if (answerElement) {
+          const successTitle = this.getAttribute('success-title')
+          const successMessage = this.getAttribute('success-message')
+
+          if (successTitle && successMessage) {
+            answerElement.setText(successTitle, successMessage)
+            answerElement.open()
+          }
+        }
+
+        this.classList.add('success')
+
+        if (isReusable) {
+          this.#inputElements?.forEach((element) => {
+            const customInput = element.closest('e-input') as HTMLElement
+
+            if (customInput) {
+              dispatchEvent(customInput, 'resetInput')
+            }
+          })
+        }
+      } catch (e) {
+        console.error(e)
+
+        const errorMessage = this.getAttribute('error-message')
+
+        alert(errorMessage)
+
+        this.#sended = false
+      }
+
+      this.classList.remove('pending')
+    }
+
+    #inputListener = () => {
+      const validInputs = this.#inputElements?.filter((inputElement) => {
+        return inputElement.validity.valid
+      }).length
+
+      if (this.#buttonElement) {
+        if (validInputs === this.#inputElements?.length) {
+          this.#buttonElement.disabled = false
+        } else {
+          this.#buttonElement.disabled = true
+        }
+      }
+    }
+  }
+
+  if (!customElements.get('e-form')) {
+    customElements.define('e-form', FormElement)
+  }
+
+  declare global {
+    interface HTMLElementTagNameMap {
+      'e-form': FormElement
+    }
+  }
+</script>

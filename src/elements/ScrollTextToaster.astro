@@ -1,0 +1,27 @@
+---
+import CaptureOnce from './CaptureOnce.astro'
+import TextToaster from './TextToaster.astro'
+
+export interface Props {
+  class?: string
+  text?: string
+}
+
+const { class: className, text, ...rest } = Astro.props
+---
+
+<CaptureOnce
+  {...rest}
+  class={`scroll-text-toaster ${className || ''}`}
+>
+  <TextToaster text={text} />
+</CaptureOnce>
+<e-segment> </e-segment>
+
+<style is:global>
+  .scroll-text-toaster {
+    &.captured {
+      --cooked: 1;
+    }
+  }
+</style>

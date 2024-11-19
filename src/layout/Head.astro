@@ -1,0 +1,29 @@
+---
+import Favicon from './Favicon.astro'
+import Seo, { type Props as SeoProps } from './Seo.astro'
+
+export interface Props {
+  seo?: SeoProps | undefined
+}
+
+const { seo } = Astro.props
+---
+
+<head>
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <!-- Убрать -->
+  <meta
+    name="robots"
+    content="noindex, nofollow"
+  />
+
+  <Favicon />
+
+  <Seo {...seo} />
+</head>

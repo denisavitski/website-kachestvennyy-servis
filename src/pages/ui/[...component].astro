@@ -1,0 +1,42 @@
+---
+import type { GetStaticPaths } from 'astro'
+import Layout from '../../layout/Layout.astro'
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const components = (await Astro.glob('src/*/**.astro')) as Array<any>
+
+  return components.map((comp) => {
+    const id = comp.default.moduleId.split('src')[1].replace('.astro', '')
+    return {
+      params: { component: id },
+      props: { ComponentModule: comp },
+    }
+  })
+}
+
+const ComponentModule = Astro.props.ComponentModule as any
+
+const Component = ComponentModule.default
+const modal = ComponentModule.modal || false
+const header = ComponentModule.header || false
+const footer = ComponentModule.footer || false
+---
+
+<Layout
+  {header}
+  {footer}>
+  {Component ? <Component /> : <h1>Компонент не найден</h1>}
+</Layout>
+
+<script define:vars={{ modal }} is:inline>
+  if (modal) {
+    addEventListener(
+      'load',
+      () => {
+        const el = document.querySelector(modal)
+        el.open()
+      },
+      100,
+    )
+  }
+</script>

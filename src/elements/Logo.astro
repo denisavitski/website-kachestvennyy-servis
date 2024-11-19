@@ -1,0 +1,58 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+export interface Props extends HTMLAttributes<any> {
+  class?: string
+  src?: string | undefined
+  size?: 'default' | 'large'
+}
+
+const { class: className, size = 'default', src = '/images/full-logo.svg', ...rest } = Astro.props
+---
+
+<a
+  {...rest}
+  class:list={['logo', className]}
+  href="/"
+  data-prefetch
+  data-size={size}
+>
+  <img
+    class="logo__image"
+    src={src}
+    alt="Логотип компании"
+    decoding="async"
+  /></a
+>
+
+<style is:global>
+  .logo {
+    display: block;
+
+    &[data-size='default'] {
+      width: 8.4rem;
+      height: 7.6rem;
+    }
+
+    &[data-size='large'] {
+      width: 11.5rem;
+      height: 10.4rem;
+    }
+
+    @media (max-width: 768px) {
+      &[data-size='default'] {
+        width: 6.2rem;
+        height: 5.6rem;
+      }
+    }
+  }
+
+  .logo__image {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: contain;
+  }
+</style>

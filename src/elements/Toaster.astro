@@ -1,0 +1,104 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+export interface Props extends HTMLAttributes<any> {
+  class?: string
+  vector?: 'up' | 'right' | 'down' | 'left' | undefined
+  type?: 'translate' | 'clip' | undefined
+}
+
+const {
+  class: className,
+  vector = 'up',
+  type = 'translate',
+  ...rest
+} = Astro.props
+---
+
+<div
+  {...rest}
+  class:list={['toaster', className]}
+  data-vector={vector}
+  data-type={type}
+>
+  <div class="toaster__toast">
+    <slot />
+  </div>
+</div>
+
+<style is:global>
+  .toaster {
+    @media (min-width: 769px) {
+      --__cooked: calc(1 - var(--cooked, 0));
+
+      &[data-type='translate'] {
+        overflow: hidden;
+      }
+    }
+  }
+
+  @media (min-width: 769px) {
+    .toaster__toast {
+      .toaster[data-type='translate'] & {
+        transition: transform var(--transition, 0.8s);
+      }
+
+      .toaster[data-type='clip'] & {
+        will-change: clip-path;
+        transition: clip-path var(--transition, 0.8s);
+      }
+
+      .toaster[data-vector='up'][data-type='translate'] & {
+        transform: translate3d(0, calc(101% * var(--__cooked)), 0);
+      }
+
+      .toaster[data-vector='right'][data-type='translate'] & {
+        transform: translate3d(calc(-101% * var(--__cooked)), 0, 0);
+      }
+
+      .toaster[data-vector='down'][data-type='translate'] & {
+        transform: translate3d(0, calc(-101% * var(--__cooked)), 0);
+      }
+
+      .toaster[data-vector='left'][data-type='translate'] & {
+        transform: translate3d(calc(101% * var(--__cooked)), 0, 0);
+      }
+
+      .toaster[data-vector='up'][data-type='clip'] & {
+        clip-path: polygon(
+          0 calc(100% * var(--__cooked)),
+          100% calc(100% * var(--__cooked)),
+          100% 100%,
+          0% 100%
+        );
+      }
+
+      .toaster[data-vector='right'][data-type='clip'] & {
+        clip-path: polygon(
+          0 0,
+          calc(100% * (1 - var(--__cooked))) 0,
+          calc(100% * (1 - var(--__cooked))) 100%,
+          0% 100%
+        );
+      }
+
+      .toaster[data-vector='down'][data-type='clip'] & {
+        clip-path: polygon(
+          0 0,
+          100% 0,
+          100% calc(100% * (1 - var(--__cooked))),
+          0 calc(100% * (1 - var(--__cooked)))
+        );
+      }
+
+      .toaster[data-vector='left'][data-type='clip'] & {
+        clip-path: polygon(
+          calc(100% * var(--__cooked)) 0,
+          100% 0,
+          100% 100%,
+          calc(100% * var(--__cooked)) 100%
+        );
+      }
+    }
+  }
+</style>

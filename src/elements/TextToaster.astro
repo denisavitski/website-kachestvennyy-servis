@@ -1,0 +1,34 @@
+---
+export interface Props {
+  class?: string
+  text?: string | undefined
+}
+
+const { class: className, text = 'Привет', ...rest } = Astro.props
+---
+
+<e-slicer
+  {...rest}
+  words
+  index
+  class:list={['text-toaster', className]}
+  set:html={text}
+/>
+
+<style is:global>
+  .text-toaster {
+    display: block;
+
+    @media (min-width: 769px) {
+      .word {
+        overflow: hidden;
+      }
+
+      .value {
+        transition: transform var(--duration, 0.5s)
+          calc(var(--delay, 0.05s) * var(--word-index));
+        transform: translateY(calc(100% * (1 - var(--cooked, 0))));
+      }
+    }
+  }
+</style>

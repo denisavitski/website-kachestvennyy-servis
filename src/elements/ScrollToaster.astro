@@ -1,0 +1,33 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import CaptureOnce from './CaptureOnce.astro'
+import Toaster, { type Props as ToasterProps } from './Toaster.astro'
+
+export interface Props extends HTMLAttributes<'style'> {
+  class?: string
+  text?: string
+  vector?: ToasterProps['vector']
+  type?: ToasterProps['type']
+}
+
+const { class: className, text, vector, type, ...rest } = Astro.props
+---
+
+<CaptureOnce
+  {...rest}
+  class={`scroll-toaster ${className || ''}`}
+>
+  <Toaster
+    {vector}
+    {type}
+    ><slot /></Toaster
+  >
+</CaptureOnce>
+
+<style is:global>
+  .scroll-toaster {
+    &.captured {
+      --cooked: 1;
+    }
+  }
+</style>

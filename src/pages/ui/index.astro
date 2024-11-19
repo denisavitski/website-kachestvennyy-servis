@@ -1,0 +1,128 @@
+---
+import Layout from '@layout/Layout.astro'
+
+const modules = (await Astro.glob('src/**/*.astro')) as Array<any>
+
+const components = new Map<string, Array<string>>()
+
+modules.forEach((module) => {
+  const path = module.default.moduleId.split('src')[1]
+
+  const splitted = path.slice(1).split('/')
+  const folder = splitted[0]
+
+  if (
+    folder === 'elements' ||
+    folder === 'blocks' ||
+    folder === 'pages' ||
+    folder === 'singletons'
+  ) {
+    let folderArray = components.get(folder)
+
+    if (!folderArray) {
+      folderArray = []
+      components.set(folder, folderArray)
+    }
+
+    const name = splitted.slice(1).join('/').split('.astro')[0]
+
+    if (!name.includes('...') && !name.includes('ui')) {
+      folderArray.push(name)
+      folderArray.sort((a, b) => a.split('/').length - b.split('/').length)
+    }
+  }
+})
+---
+
+<Layout
+  header={false}
+  footer={false}>
+  <e-accordion class="nav">
+    {
+      Array.from(components).map(([folderName, componentNames], i) => {
+        return (
+          <div
+            class="nav__folder"
+            data-opened={i === 0}>
+            <div class="nav__folder__title">{folderName}</div>
+            <div class="nav__folder__list">
+              <div class="nav__folder__list__inner">
+                {componentNames.map((name) => {
+                  return (
+                    <a
+                      class="nav__link"
+                      data-morph-skip
+                      href={
+                        folderName === 'pages'
+                          ? ('/' + name.replace('index', '/')).replace(
+                              '//',
+                              '/',
+                            )
+                          : `/ui/${folderName}/${name}`
+                      }>
+                      {name}
+                    </a>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+        )
+      })
+    }
+  </e-accordion>
+</Layout>
+
+<style is:global>
+  .nav {
+    width: 100%;
+    height: 100%;
+
+    padding: var(--section-vertical-padding) var(--screen-horisontal-padding);
+
+    display: grid;
+    grid-auto-rows: max-content;
+    gap: 2rem;
+  }
+
+  .nav__folder {
+    display: block;
+  }
+
+  .nav__folder__title {
+    text-transform: capitalize;
+    font-size: 3rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .nav__folder__list {
+    width: 90rem;
+    transition: height var(--duration-button);
+
+    height: 0;
+    overflow: hidden;
+
+    @media (max-width: 768px) {
+      width: 100%;
+    }
+  }
+
+  .nav__folder__list__inner {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    padding-top: 2rem;
+    padding-left: 2rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(1, 1fr);
+    }
+  }
+
+  .nav__link {
+    font-size: 2rem;
+    width: max-content;
+    white-space: break-all;
+  }
+</style>

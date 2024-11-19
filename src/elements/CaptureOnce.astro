@@ -1,0 +1,21 @@
+---
+export interface Props {
+  class?: string
+}
+
+const { class: className, ...rest } = Astro.props
+---
+
+<e-segment
+  {...rest}
+  class:list={['capture-once', className]}>
+  <slot />
+</e-segment>
+
+<style is:global>
+  .capture-once {
+    display: block;
+    --start-offset: calc(-100vh * var(--offset, 0.9));
+    --capture-once: true;
+  }
+</style>

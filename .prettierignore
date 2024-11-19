@@ -1,0 +1,9 @@
+package-lock.json
+.DS_Store
+node_modules
+public
+optimize
+.vscode
+.prettierrc
+README.md
+packages.json

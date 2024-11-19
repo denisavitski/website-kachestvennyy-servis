@@ -1,0 +1,319 @@
+---
+import Logo from '@elements/Logo.astro'
+import { tryCreateHrefFromContact } from '@utils/href'
+
+export interface Props {
+  logo?: string
+  nav?: Array<{
+    name: string
+    href?: string
+    sub?: Array<{
+      name: string
+      href: string
+    }>
+  }>
+  contact?: {
+    title: string
+    value: string
+  }
+}
+
+const {
+  logo,
+  nav = [
+    {
+      name: 'О нас',
+      href: '/about',
+    },
+    {
+      name: 'Услуги',
+      href: '/services',
+    },
+    {
+      name: 'Дома в управлении',
+      href: '/houses',
+    },
+    {
+      name: 'Раскрытие информации',
+      href: '/information',
+    },
+    {
+      name: 'Новости',
+      href: '/news',
+    },
+    {
+      name: 'Контакты',
+      href: '/contacts',
+    },
+  ],
+  contact = {
+    title: 'Диспетчерская 24/7:',
+    value: '8 800 101-16-49',
+  },
+} = Astro.props
+---
+
+<!-- SINGLETON -->
+<header class="header">
+  <div class="header__inner">
+    <Logo
+      class="header__logo header__reveal"
+      src={logo}
+      style={{ '--reveal-index': 0 }}
+    />
+
+    <e-popover-button
+      target="menu"
+      class="header__menu-button"
+    >
+      <div class="header__menu-button__line header__menu-button__line_1"></div>
+      <div class="header__menu-button__line header__menu-button__line_2"></div>
+      <div class="header__menu-button__line header__menu-button__line_3"></div>
+    </e-popover-button>
+
+    <e-popover
+      id="menu"
+      class="header__menu"
+    >
+      <div class="header__menu__inner">
+        <nav class="header__nav">
+          {
+            nav.map((item) => {
+              return (
+                <a
+                  class="font-p2 font-mob-p1 header__nav__link"
+                  href={item.href}
+                  data-prefetch
+                >
+                  <span>{item.name}</span>
+                </a>
+              )
+            })
+          }
+        </nav>
+
+        <div class="font-p2 header__contact">
+          <div class="header__contact__title">{contact.title}</div>
+          <a
+            class="header__contact__value"
+            href={tryCreateHrefFromContact(contact.value).href}
+            >{contact.value}</a
+          >
+        </div>
+      </div>
+    </e-popover>
+  </div>
+</header>
+
+<style is:global>
+  .header {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    z-index: var(--z-header);
+
+    width: 100%;
+
+    @media (min-width: 769px) {
+      padding: 0 var(--screen-horisontal-padding);
+    }
+  }
+
+  .header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    width: 100%;
+    height: var(--header-height);
+
+    padding: 0 2rem;
+
+    background-color: var(--color-background);
+
+    @media (min-width: 769px) {
+      border-bottom-left-radius: 3rem;
+      border-bottom-right-radius: 3rem;
+    }
+
+    @media (max-width: 768px) {
+      padding: 0 var(--screen-horisontal-padding);
+    }
+  }
+
+  .header__logo {
+  }
+
+  .header__menu-button {
+    --type: toggle;
+
+    @media (min-width: 769px) {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      --height: 1.5rem;
+
+      position: relative;
+      z-index: 1;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      width: 3.4rem;
+      height: 3.4rem;
+    }
+  }
+
+  .header__menu-button__line {
+    position: absolute;
+
+    width: 100%;
+    height: 0.15rem;
+
+    background-color: var(--color-primary);
+
+    transition: transform var(--duration-button);
+  }
+
+  .header__menu-button__line_1 {
+    transform: translateY(calc(var(--height) / 2 * -1 + 100%)) rotate(0deg);
+
+    .header__menu-button.opened & {
+      transform: translateY(0px) rotate(135deg);
+    }
+  }
+
+  .header__menu-button__line_2 {
+    transform: scaleX(1);
+
+    .header__menu-button.opened & {
+      transform: scaleX(0) rotate(0deg);
+    }
+  }
+
+  .header__menu-button__line_3 {
+    transform: translateY(calc(var(--height) / 2 * 1 - 100%)) rotate(0deg);
+
+    .header__menu-button.opened & {
+      transform: translateY(0px) rotate(-135deg);
+    }
+  }
+
+  .header__menu {
+    @media (min-width: 769px) {
+      display: contents !important;
+    }
+
+    @media (max-width: 768px) {
+      position: fixed;
+      top: 0;
+      right: 0;
+
+      z-index: -1;
+
+      width: 100%;
+      height: 100%;
+
+      display: none;
+      opacity: 1 !important;
+      transition: opacity var(--duration-button);
+    }
+  }
+
+  .header__menu__inner {
+    @media (min-width: 769px) {
+      display: contents !important;
+    }
+
+    @media (max-width: 768px) {
+      position: absolute;
+      right: 0;
+      top: var(--header-height);
+
+      display: flex;
+      flex-direction: column;
+
+      width: 100%;
+      height: calc(100% - var(--header-height));
+
+      padding: var(--screen-horisontal-padding);
+      padding-top: 0;
+
+      background-color: var(--color-background);
+
+      transition: clip-path var(--duration-button);
+      clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+
+      overflow: hidden auto;
+
+      .header__menu.opened & {
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+      }
+    }
+  }
+
+  .header__menu__logo {
+    @media (min-width: 769px) {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      width: 8.3rem;
+      height: 6.5rem;
+
+      margin-bottom: 4rem;
+    }
+  }
+
+  .header__nav {
+    display: flex;
+    gap: 5rem;
+    align-items: center;
+
+    @media (min-width: 769px) {
+      margin-left: 15rem;
+      margin-right: auto;
+    }
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 3rem;
+
+      margin-bottom: 5rem;
+      margin-top: 5rem;
+    }
+  }
+
+  .header__contact {
+  }
+
+  .header__contact__title {
+    @media (min-width: 769px) {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      margin-bottom: 1rem;
+    }
+  }
+
+  .header__contact__value {
+  }
+</style>
+
+<script>
+  import type { PopoverElement } from 'aptechka/popover'
+
+  const linkElements = document.querySelectorAll('.header__nav__link')
+  const menuElement = document.querySelector<PopoverElement>('.header__menu')
+
+  linkElements.forEach((link) => {
+    link.addEventListener('click', () => {
+      menuElement?.close()
+    })
+  })
+</script>

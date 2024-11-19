@@ -1,0 +1,366 @@
+---
+export interface Props {
+  name?: string
+  placeholder?: string
+  type?: astroHTML.JSX.HTMLInputTypeAttribute | 'phone'
+  class?: string
+  required?: boolean
+  staticError?: boolean | 'mobile'
+  emptyError?: string
+  fillError?: string
+}
+
+const {
+  class: className,
+  name = 'dev',
+  placeholder = 'dev',
+  type = 'email',
+  staticError = false,
+  emptyError = 'Заполните поле',
+  fillError = '',
+  required,
+  ...rest
+} = Astro.props
+---
+
+<e-input
+  {...rest}
+  class:list={['input', className]}
+  data-type={type}
+>
+  <label class="visually-hidden">
+    {placeholder}
+    <input
+      type={type === 'phone' ? 'text' : type}
+      {required}
+      class="input__native"
+      {name}
+    />
+  </label>
+
+  <span class="input__content">
+    <span
+      class="font-d-24-500-140-0 font-t-20-500-140-0 input__editable"
+      contenteditable
+    ></span>
+
+    <span
+      class="font-d-24-500-140-0 font-t-20-500-140-0 input__placeholder"
+      aria-hidden="true"
+      >{placeholder}</span
+    >
+  </span>
+
+  <span
+    class:list={['input__error']}
+    data-static={staticError}
+    aria-hidden="true"
+    data-fill-error={fillError}
+    data-empty-error={emptyError}
+  ></span>
+</e-input>
+
+<style is:global>
+  .input {
+    --text-color: var(--color-grey-6);
+    --placeholder-color: var(--color-grey-6);
+    --border-color: var(--color-grey-6);
+    --placeholder-transform: 0;
+    --error-opacity: 0;
+
+    font-size: 2.2rem;
+
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    height: max-content;
+
+    transition: border-color var(--duration-button);
+
+    &:focus-within,
+    &.has-data {
+      --text-color: var(--color-grey-6);
+      --placeholder-color: rgba(51, 51, 51, 0.6);
+      --border-color: var(--color-grey-6);
+      --placeholder-transform: 1;
+    }
+
+    &.error {
+      --border-color: var(--color-red);
+      --error-opacity: 1;
+    }
+
+    @media (max-width: 768px) {
+      font-size: 1.6rem;
+    }
+  }
+
+  .input__content {
+    display: flex;
+
+    width: 100%;
+    height: 100%;
+    padding-bottom: 1rem;
+
+    border-bottom: 0.1rem solid var(--border-color);
+  }
+
+  .input__editable {
+    display: block;
+    max-width: 100%;
+    width: 100%;
+
+    cursor: text;
+
+    outline: none;
+
+    color: var(--text-color);
+
+    transition: color var(--duration-button);
+  }
+
+  .input__placeholder {
+    position: absolute;
+    bottom: 100%;
+
+    pointer-events: none;
+
+    color: var(--placeholder-color);
+
+    transform: translateY(calc(100% * (1 - var(--placeholder-transform))))
+      scale(calc(1 - var(--placeholder-transform) * 0.35));
+
+    transform-origin: left bottom;
+
+    transition:
+      color var(--duration-button),
+      transform var(--duration-button);
+
+    will-change: transform;
+  }
+
+  .input__error {
+    --offset: 0.5rem;
+
+    font-size: 1.2rem;
+    font-weight: 500;
+    line-height: 150%;
+
+    position: absolute;
+    top: calc(100% + var(--offset));
+    right: 0;
+
+    color: var(--color-red);
+
+    opacity: var(--error-opacity);
+
+    transition: opacity var(--duration-button);
+
+    &[data-static=''] {
+      display: none;
+      position: unset;
+      margin-top: var(--offset);
+    }
+
+    .input.error &[data-static=''] {
+      display: block;
+    }
+
+    @media (max-width: 768px) {
+      font-size: 1rem;
+
+      &[data-static='mobile'] {
+        display: none;
+        position: unset;
+        margin-top: var(--offset);
+      }
+
+      .input.error &[data-static='mobile'] {
+        display: block;
+      }
+    }
+  }
+</style>
+
+<script>
+  export interface InputElementEvents {
+    resetInput: CustomEvent
+  }
+
+  export class InputElement extends HTMLElement {
+    #nativeInputElement: HTMLInputElement | null = null
+    #editableElement: HTMLElement | null = null
+    #errorElement: HTMLElement | null = null
+    #isError = false
+    #isPhoneInput = false
+    #emptyErrorText = ''
+    #fillErrorText = ''
+
+    constructor() {
+      super()
+
+      this.addEventListener('resetInput', () => {
+        this.reset()
+      })
+    }
+
+    public validate() {
+      if (
+        this.#nativeInputElement &&
+        !this.#nativeInputElement.validity.valid
+      ) {
+        this.#showError()
+      } else {
+        this.#hideError()
+      }
+    }
+
+    public reset() {
+      if (this.#editableElement) {
+        this.#editableElement!.textContent = ''
+        this.#editableElement.dispatchEvent(new Event('input'))
+      }
+    }
+
+    protected connectedCallback() {
+      this.#nativeInputElement = this.querySelector('.input__native')
+      this.#editableElement = this.querySelector('.input__editable')
+      this.#errorElement = this.querySelector('.input__error')
+
+      this.#emptyErrorText =
+        this.#errorElement?.getAttribute('data-empty-error') || ''
+
+      this.#fillErrorText =
+        this.#errorElement?.getAttribute('data-fill-error') || ''
+
+      this.#isPhoneInput = this.getAttribute('data-type') === 'phone'
+
+      this.#editableElement?.addEventListener('input', this.#inputListener)
+      this.#editableElement?.addEventListener('focus', this.#focusListener)
+      this.#editableElement?.addEventListener('blur', this.#blurListener)
+    }
+
+    protected disconnectedCallback() {
+      this.#editableElement?.removeEventListener('input', this.#inputListener)
+      this.#editableElement?.addEventListener('focus', this.#focusListener)
+      this.#editableElement?.removeEventListener('blur', this.#blurListener)
+    }
+
+    #inputListener = () => {
+      let value = this.#editableElement!.textContent?.trim() || ''
+
+      if (this.#isPhoneInput && value) {
+        value = this.#maskPhoneValue(value)
+        this.#editableElement!.textContent = value
+
+        const sel = window.getSelection()
+
+        if (sel) {
+          sel.selectAllChildren(this.#editableElement!)
+          sel.collapseToEnd()
+        }
+      }
+
+      if (this.#nativeInputElement) {
+        this.#nativeInputElement.value = value
+
+        if (value) {
+          this.classList.add('has-data')
+        } else {
+          this.classList.remove('has-data')
+        }
+
+        if (this.#nativeInputElement && this.#isPhoneInput) {
+          if (this.#nativeInputElement.value.length < 18) {
+            this.#nativeInputElement.setCustomValidity(this.#fillErrorText)
+          } else {
+            this.#nativeInputElement.setCustomValidity('')
+          }
+        }
+
+        this.#nativeInputElement.dispatchEvent(new Event('input'))
+
+        if (this.#isError && value) {
+          this.#hideError()
+        }
+      }
+    }
+
+    #focusListener = () => {
+      if (this.#isPhoneInput) {
+        const text = this.#editableElement!.textContent
+
+        if (!text) {
+          this.#editableElement!.textContent = this.#maskPhoneValue('1')
+        }
+
+        this.#inputListener()
+      }
+    }
+
+    #blurListener = () => {
+      this.validate()
+    }
+
+    #showError() {
+      this.#isError = true
+
+      if (this.#errorElement) {
+        const message = !this.#nativeInputElement?.value
+          ? this.#emptyErrorText
+          : this.#fillErrorText
+
+        this.#errorElement.textContent = message
+
+        this.#errorElement.setAttribute('aria-hidden', 'false')
+      }
+
+      this.classList.add('error')
+    }
+
+    #hideError() {
+      this.#isError = false
+
+      this.classList.remove('error')
+      this.#errorElement?.setAttribute('aria-hidden', 'true')
+    }
+
+    #maskPhoneValue(value: string) {
+      let unmasked = value
+        .replace(/\D/g, '')
+        .match(/(\d{0,1})(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/)
+
+      if (unmasked) {
+        if (!unmasked.input) {
+          return ''
+        }
+
+        const masked =
+          `+7 (${unmasked[2]}` +
+          (unmasked[3] ? `) ${unmasked[3]}` : '') +
+          (unmasked[4] ? `-${unmasked[4]}` : '') +
+          (unmasked[5] ? `-${unmasked[5]}` : '') +
+          (unmasked[6] ? `-${unmasked[6]}` : '')
+
+        value = masked.slice(0, 19)
+      } else {
+        value = ''
+      }
+
+      return value
+    }
+  }
+
+  if (!customElements.get('e-input')) {
+    customElements.define('e-input', InputElement)
+  }
+
+  declare global {
+    interface HTMLElementTagNameMap {
+      'e-input': InputElement
+    }
+
+    interface HTMLElementEventMap extends InputElementEvents {}
+  }
+</script>

@@ -1,0 +1,115 @@
+---
+import { getHref } from '@utils/url'
+
+export interface PageSeo {
+  name?: string | undefined | null
+  title?: string | undefined | null
+  metaTitle?: string | undefined | null
+  description?: string | undefined | null
+  keywords?: string | undefined | null
+  cover?: string | undefined | null
+}
+
+export interface Props extends PageSeo {}
+
+const {
+  name = 'Три топора',
+  title = '',
+  metaTitle = '',
+  description = '',
+  keywords = '',
+  cover,
+} = Astro.props
+
+const url = new URL(Astro.url, Astro.site)
+
+const { href: canonical } = url
+
+const coverHref = cover ? getHref(cover) : ''
+---
+
+<title>{title}</title>
+
+<meta
+  name="title"
+  content={metaTitle || title}
+/>
+
+<meta
+  name="description"
+  content={description}
+/>
+
+{
+  keywords && (
+    <meta
+      name="keywords"
+      content={keywords}
+    />
+  )
+}
+
+<link
+  rel="canonical"
+  href={canonical}
+/>
+
+<meta
+  property="og:type"
+  content={'website'}
+/>
+
+<meta
+  property="og:url"
+  content={canonical}
+/>
+
+<meta
+  property="og:title"
+  content={metaTitle || title}
+/>
+
+<meta
+  property="og:description"
+  content={description}
+/>
+
+<meta
+  property="og:image"
+  content={coverHref}
+/>
+
+<meta
+  property="og:site_name"
+  content={name}
+/>
+
+<meta
+  property="og:locale"
+  content={'ru_RU'}
+/>
+
+<meta
+  property="twitter:card"
+  content="summary_large_image"
+/>
+
+<meta
+  property="twitter:url"
+  content={canonical}
+/>
+
+<meta
+  property="twitter:title"
+  content={metaTitle || title}
+/>
+
+<meta
+  property="twitter:description"
+  content={description}
+/>
+
+<meta
+  property="twitter:image"
+  content={coverHref}
+/>
