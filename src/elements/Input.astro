@@ -14,7 +14,7 @@ const {
   class: className,
   name = 'dev',
   placeholder = 'dev',
-  type = 'email',
+  type = 'text',
   staticError = false,
   emptyError = 'Заполните поле',
   fillError = '',
@@ -40,19 +40,19 @@ const {
 
   <span class="input__content">
     <span
-      class="font-d-24-500-140-0 font-t-20-500-140-0 input__editable"
+      class="font-p2 font-mob-p3 input__editable"
       contenteditable
     ></span>
 
     <span
-      class="font-d-24-500-140-0 font-t-20-500-140-0 input__placeholder"
+      class="font-p2 font-mob-p3 input__placeholder"
       aria-hidden="true"
       >{placeholder}</span
     >
   </span>
 
   <span
-    class:list={['input__error']}
+    class:list={['font-p2 font-mob-p3 input__error']}
     data-static={staticError}
     aria-hidden="true"
     data-fill-error={fillError}
@@ -62,13 +62,14 @@ const {
 
 <style is:global>
   .input {
-    --text-color: var(--color-grey-6);
-    --placeholder-color: var(--color-grey-6);
-    --border-color: var(--color-grey-6);
+    --text-color: var(--color-primary);
+    --placeholder-color: var(--color-button);
+    --border-color: var(--color-button);
     --placeholder-transform: 0;
     --error-opacity: 0;
-
-    font-size: 2.2rem;
+    --min-height: 7rem;
+    --padding: 2rem;
+    --offset: 1rem;
 
     position: relative;
 
@@ -76,42 +77,46 @@ const {
     flex-direction: column;
     height: max-content;
 
+    min-height: var(--height, var(--min-height));
+
     transition: border-color var(--duration-button);
 
     &:focus-within,
     &.has-data {
-      --text-color: var(--color-grey-6);
-      --placeholder-color: rgba(51, 51, 51, 0.6);
-      --border-color: var(--color-grey-6);
       --placeholder-transform: 1;
     }
 
     &.error {
-      --border-color: var(--color-red);
+      --border-color: var(--color-error);
       --error-opacity: 1;
     }
 
     @media (max-width: 768px) {
-      font-size: 1.6rem;
+      --min-height: 6rem;
     }
   }
 
   .input__content {
-    display: flex;
-
     width: 100%;
-    height: 100%;
-    padding-bottom: 1rem;
+    min-height: var(--height, var(--min-height));
+    padding: 0 var(--padding);
 
-    border-bottom: 0.1rem solid var(--border-color);
+    border: 0.1rem solid var(--border-color);
+    border-radius: 2rem;
+    background-color: var(--color-surface);
   }
 
   .input__editable {
     display: block;
-    max-width: 100%;
+
     width: 100%;
+    min-height: var(--height, var(--min-height));
+
+    padding: var(--padding) 0;
 
     cursor: text;
+
+    vertical-align: middle;
 
     outline: none;
 
@@ -123,13 +128,18 @@ const {
   .input__placeholder {
     position: absolute;
     bottom: 100%;
+    left: var(--padding);
 
     pointer-events: none;
 
     color: var(--placeholder-color);
 
-    transform: translateY(calc(100% * (1 - var(--placeholder-transform))))
-      scale(calc(1 - var(--placeholder-transform) * 0.35));
+    transform: translateY(
+      calc(
+        (var(--min-height) / 2 + 50%) * (1 - var(--placeholder-transform)) + var(--offset) *
+          var(--placeholder-transform) * -1
+      )
+    );
 
     transform-origin: left bottom;
 
@@ -141,35 +151,34 @@ const {
   }
 
   .input__error {
-    --offset: 0.5rem;
-
-    font-size: 1.2rem;
-    font-weight: 500;
-    line-height: 150%;
-
     position: absolute;
     top: calc(100% + var(--offset));
-    right: 0;
+    left: var(--padding);
 
-    color: var(--color-red);
+    color: var(--color-error);
 
     opacity: var(--error-opacity);
 
-    transition: opacity var(--duration-button);
+    transition:
+      opacity var(--duration-button),
+      height var(--duration-button),
+      margin-bottom var(--duration-button);
 
     &[data-static=''] {
-      display: none;
-      position: unset;
-      margin-top: var(--offset);
+      position: relative;
+      height: 0;
+      left: 0;
+      overflow: hidden;
+      top: var(--offset);
+      margin-left: var(--padding);
     }
 
     .input.error &[data-static=''] {
-      display: block;
+      height: var(--scroll-height, 0px);
+      margin-bottom: 1rem;
     }
 
     @media (max-width: 768px) {
-      font-size: 1rem;
-
       &[data-static='mobile'] {
         display: none;
         position: unset;
@@ -184,6 +193,9 @@ const {
 </style>
 
 <script>
+  import { requestIdleCallback } from 'aptechka/utils'
+  import { windowResizer } from 'aptechka/window-resizer'
+
   export interface InputElementEvents {
     resetInput: CustomEvent
   }
@@ -206,10 +218,7 @@ const {
     }
 
     public validate() {
-      if (
-        this.#nativeInputElement &&
-        !this.#nativeInputElement.validity.valid
-      ) {
+      if (this.#nativeInputElement && !this.#nativeInputElement.validity.valid) {
         this.#showError()
       } else {
         this.#hideError()
@@ -228,23 +237,27 @@ const {
       this.#editableElement = this.querySelector('.input__editable')
       this.#errorElement = this.querySelector('.input__error')
 
-      this.#emptyErrorText =
-        this.#errorElement?.getAttribute('data-empty-error') || ''
+      this.#emptyErrorText = this.#errorElement?.getAttribute('data-empty-error') || ''
 
-      this.#fillErrorText =
-        this.#errorElement?.getAttribute('data-fill-error') || ''
+      this.#fillErrorText = this.#errorElement?.getAttribute('data-fill-error') || ''
 
       this.#isPhoneInput = this.getAttribute('data-type') === 'phone'
 
       this.#editableElement?.addEventListener('input', this.#inputListener)
       this.#editableElement?.addEventListener('focus', this.#focusListener)
       this.#editableElement?.addEventListener('blur', this.#blurListener)
+
+      if (this.#errorElement) {
+        windowResizer.subscribe(this.#resizeListener)
+      }
     }
 
     protected disconnectedCallback() {
       this.#editableElement?.removeEventListener('input', this.#inputListener)
       this.#editableElement?.addEventListener('focus', this.#focusListener)
       this.#editableElement?.removeEventListener('blur', this.#blurListener)
+
+      windowResizer.unsubscribe(this.#resizeListener)
     }
 
     #inputListener = () => {
@@ -316,6 +329,8 @@ const {
         this.#errorElement.setAttribute('aria-hidden', 'false')
       }
 
+      this.#resizeListener()
+
       this.classList.add('error')
     }
 
@@ -327,9 +342,7 @@ const {
     }
 
     #maskPhoneValue(value: string) {
-      let unmasked = value
-        .replace(/\D/g, '')
-        .match(/(\d{0,1})(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/)
+      let unmasked = value.replace(/\D/g, '').match(/(\d{0,1})(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/)
 
       if (unmasked) {
         if (!unmasked.input) {
@@ -349,6 +362,20 @@ const {
       }
 
       return value
+    }
+
+    #resizeListener = () => {
+      this.#errorElement!.style.transition = 'all 0s'
+      this.#errorElement!.style.setProperty('--scroll-height', '0px')
+
+      requestIdleCallback(() => {
+        this.#errorElement!.style.transition = ''
+
+        this.#errorElement!.style.setProperty(
+          '--scroll-height',
+          this.#errorElement!.scrollHeight + 'px',
+        )
+      })
     }
   }
 

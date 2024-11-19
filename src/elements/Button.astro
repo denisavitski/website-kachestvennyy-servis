@@ -11,6 +11,7 @@ export interface Props extends HTMLAttributes<any> {
   href?: string
   name?: string
   checked?: boolean
+  type?: string
 }
 
 const {
@@ -109,6 +110,7 @@ if (modal) {
 
   .primary-button__inner {
     padding: 0 3.5rem;
+    width: 100%;
     height: 100%;
 
     display: inline-flex;
@@ -154,6 +156,7 @@ if (modal) {
     .primary-button[data-theme='toggle'].disabled & {
       background-color: var(--color-grey-light);
       color: var(--color-grey-dark);
+      cursor: not-allowed;
     }
 
     .primary-button[data-theme='outlined'][disabled] &,
@@ -161,27 +164,24 @@ if (modal) {
       border-color: var(--color-grey-dark);
     }
 
-    .primary-button[data-theme='toggle']:not([disabled]) .primary-button__input:checked ~ &,
-    .primary-button[data-theme='toggle']:not(.disabled) .primary-button__input:checked ~ & {
+    .primary-button[data-theme='toggle']:not([disabled]):not(.disabled)
+      .primary-button__input:checked
+      ~ & {
       background-color: var(--color-button);
       color: var(--color-surface);
     }
 
     @media (hover: hover) {
-      .primary-button[data-theme='default']:not(:active):not([disabled]):hover &,
-      .primary-button[data-theme='default']:not(:active):not(.disabled):hover &,
-      .primary-button[data-theme='message']:not(:active):not([disabled]):hover &,
-      .primary-button[data-theme='message']:not(:active):not(.disabled):hover & {
+      .primary-button[data-theme='default']:not(:active):not([disabled]):not(.disabled):hover &,
+      .primary-button[data-theme='message']:not(:active):not([disabled]):not(.disabled):hover & {
         background-color: var(--color-primary);
       }
 
-      .primary-button[data-theme='outlined']:not(:active):not([disabled]):hover &,
-      .primary-button[data-theme='outlined']:not(:active):not(.disabled):hover & {
+      .primary-button[data-theme='outlined']:not(:active):not([disabled]):not(.disabled):hover & {
         background-color: var(--color-background);
       }
 
-      .primary-button[data-theme='toggle']:not(:active):not([disabled]):hover &,
-      .primary-button[data-theme='toggle']:not(:active):not(.disabled):hover & {
+      .primary-button[data-theme='toggle']:not(:active):not([disabled]):not(.disabled):hover & {
         background-color: var(--color-button);
         color: var(--color-surface);
       }

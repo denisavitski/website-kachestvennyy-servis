@@ -48,6 +48,7 @@ body {
   --color-grey-light: #bababa;
   --color-grey-dark: #8c8c8c;
   --color-page-background: #f9fbff;
+  --color-error: red;
 
   --screen-horisontal-padding: 16rem;
   --section-vertical-padding: 7.5rem;

@@ -1,0 +1,112 @@
+---
+import Button from './Button.astro'
+import Form from './Form.astro'
+import Input from './Input.astro'
+---
+
+<Form
+  name="feedback"
+  class="feedback-form"
+>
+  <Input
+    class="feedback-form__input"
+    name={'name'}
+    placeholder="Введите ФИО*"
+    staticError
+    required
+  />
+  <Input
+    class="feedback-form__input"
+    name={'phone'}
+    type={'phone'}
+    placeholder="Введите телефон*"
+    fillError="Введите телефон полностью"
+    staticError
+    required
+  />
+  <Input
+    class="feedback-form__input feedback-form__input_message"
+    name={'message'}
+    placeholder="Оставьте сообщение*"
+    staticError
+    required
+  />
+  <label class="feedback-form__terms">
+    <input
+      class="feedback-form__terms__input"
+      name="agreement"
+      type="checkbox"
+      required
+    />
+    <span class="font-p4 feedback-form__terms__value">
+      Я&nbsp;соглашаюсь с&nbsp;условиями <a
+        href="/robots.txt"
+        data-morph-skip
+        target="_blank"
+        >обработки персональных данных</a
+      >
+    </span>
+  </label>
+  <Button
+    type="submit"
+    class="feedback-form__submit"
+    >Отправить</Button
+  >
+</Form>
+
+<style is:global>
+  .feedback-form {
+    width: 100%;
+  }
+
+  .feedback-form__input {
+    margin-bottom: 2rem;
+
+    transition: margin-top var(--duration-button);
+
+    &:not(:first-of-type):focus-within,
+    &:not(:first-of-type).has-data {
+      margin-top: 5rem;
+    }
+
+    &:last-of-type {
+      margin-bottom: 3rem;
+    }
+  }
+
+  .feedback-form__input_message {
+    --height: 15rem;
+
+    @media (max-width: 768px) {
+      --height: 13rem;
+    }
+  }
+
+  .feedback-form__terms {
+    display: flex;
+    align-items: center;
+
+    margin-bottom: 2rem;
+
+    a {
+      text-decoration: underline;
+      text-decoration-skip-ink: none;
+    }
+  }
+
+  .feedback-form__terms__input {
+    width: 1.8rem;
+    height: 1.8rem;
+    margin-right: 1rem;
+
+    accent-color: var(--color-button);
+  }
+
+  .feedback-form__terms__value {
+    color: var(--color-button);
+  }
+
+  .feedback-form__submit {
+    width: 100%;
+  }
+</style>
