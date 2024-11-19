@@ -47,8 +47,9 @@ body {
   --color-accent: #ffb81c;
   --color-grey-light: #bababa;
   --color-grey-dark: #8c8c8c;
+  --color-page-background: #f9fbff;
 
-  --screen-horisontal-padding: 14rem;
+  --screen-horisontal-padding: 16rem;
   --section-vertical-padding: 7.5rem;
 
   --z-common-modal: 102;
@@ -124,6 +125,7 @@ body {
   font-family: 'OpenSans', sans-serif;
 
   color: var(--color-primary);
+  background-color: var(--color-page-background);
 
   -webkit-tap-highlight-color: transparent;
 }

@@ -7,7 +7,6 @@ node_modules/
 # logs
 npm-debug.log*
 
-
 # environment variables
 .env
 .env.production

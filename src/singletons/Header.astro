@@ -7,10 +7,6 @@ export interface Props {
   nav?: Array<{
     name: string
     href?: string
-    sub?: Array<{
-      name: string
-      href: string
-    }>
   }>
   contact?: {
     title: string
@@ -30,7 +26,7 @@ const {
       href: '/services',
     },
     {
-      name: 'Дома в управлении',
+      name: 'Дома в управлении',
       href: '/houses',
     },
     {
@@ -85,7 +81,7 @@ const {
                   href={item.href}
                   data-prefetch
                 >
-                  <span>{item.name}</span>
+                  <span set:html={item.name} />
                 </a>
               )
             })
@@ -116,7 +112,7 @@ const {
     width: 100%;
 
     @media (min-width: 769px) {
-      padding: 0 var(--screen-horisontal-padding);
+      padding: 0 14rem;
     }
   }
 
