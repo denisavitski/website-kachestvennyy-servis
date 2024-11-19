@@ -1,0 +1,187 @@
+---
+import FeedbackForm from '@elements/FeedbackForm.astro'
+import Icon from '@elements/Icon.astro'
+import Social, { type Props as SocialProps } from '@elements/Social.astro'
+import { tryCreateHrefFromContact } from '@utils/href'
+
+export interface Props {
+  heading?: string
+  description?: string
+  contacts?: {
+    title: string
+    phone: string
+    social?: SocialProps['items'] | undefined
+  }
+}
+
+const {
+  heading = 'Не&nbsp;нашли, что&nbsp;искали?',
+  description = 'Мы&nbsp;с&nbsp;радостью готовы вам&nbsp;помочь! Пожалуйста, заполните форму, и&nbsp;наша команда свяжется с&nbsp;вами в&nbsp;кратчайшие сроки.',
+  contacts = {
+    title: 'Связаться напрямую:',
+    phone: '7 968 869-28-58',
+  },
+} = Astro.props
+---
+
+<section class="feedback">
+  <div class="feedback__left">
+    <h2
+      class="font-h2 font-mob-h2 feedback__heading"
+      set:html={heading}
+    />
+
+    <p
+      class="font-p2 font-mob-p3 feedback__description"
+      set:html={description}
+    />
+
+    <div class="feedback__contacts">
+      <div
+        class="font-p1 font-mob-p1 feedback__contacts__title"
+        set:html={contacts.title}
+      />
+      <div class="feedback__contacts__content">
+        <a
+          class="font-p1 font-mob-p1 feedback__contacts__phone"
+          href={tryCreateHrefFromContact(contacts.phone).href}
+          set:html={contacts.phone}
+        />
+        <Social
+          items={contacts.social}
+          class="feedback__contacts__social"
+        />
+      </div>
+    </div>
+  </div>
+  <div class="feedback__right">
+    <FeedbackForm class="feedback__right__form" />
+    <Icon
+      class="feedback__right__logo"
+      name="logo"
+    />
+  </div>
+</section>
+
+<style is:global>
+  .feedback {
+    display: flex;
+    justify-content: space-between;
+
+    @media (max-width: 768px) {
+      padding: 0 var(--screen-horisontal-padding);
+      flex-direction: column;
+    }
+  }
+
+  .feedback__left {
+    flex-shrink: 0;
+    box-sizing: content-box;
+    width: 58.2rem;
+    padding: 6.65rem var(--screen-horisontal-padding);
+    padding-right: 0;
+
+    @media (max-width: 768px) {
+      width: 100%;
+      padding: 0;
+      margin-bottom: 5rem;
+    }
+  }
+
+  .feedback__heading {
+    margin-bottom: 5rem;
+
+    @media (max-width: 768px) {
+      margin-bottom: 3rem;
+    }
+  }
+
+  .feedback__description {
+    margin-bottom: 17rem;
+
+    @media (max-width: 768px) {
+      margin-bottom: 5rem;
+    }
+  }
+
+  .feedback__contacts {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+
+    @media (max-width: 768px) {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 2rem;
+    }
+  }
+
+  .feedback__contacts__title {
+  }
+
+  .feedback__contacts__content {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .feedback__contacts__phone {
+    color: var(--color-button);
+
+    @media (hover: hover) {
+      transition: color var(--duration-button);
+
+      &:hover {
+        color: var(--color-primary);
+      }
+    }
+  }
+
+  .feedback__contacts__social {
+  }
+
+  .feedback__right {
+    width: 94.6rem;
+
+    padding-top: 3.05rem;
+    padding-bottom: 2.85rem;
+
+    display: flex;
+    align-items: center;
+
+    background-color: var(--color-background);
+    border-top-left-radius: 3rem;
+    border-bottom-left-radius: 3rem;
+
+    @media (max-width: 768px) {
+      width: 100%;
+      padding: 2rem;
+
+      border-top-right-radius: 3rem;
+      border-bottom-right-radius: 3rem;
+    }
+  }
+
+  .feedback__right__form {
+    margin-right: 15.4rem;
+    margin-left: 13.1rem;
+    width: 52rem;
+
+    @media (max-width: 768px) {
+      width: 100%;
+      margin: 0;
+    }
+  }
+
+  .feedback__right__logo {
+    flex-shrink: 0;
+    --size: 27.3rem;
+    width: var(--size);
+    height: var(--size);
+    margin-right: calc(var(--size) / 2 * -1);
+
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+</style>

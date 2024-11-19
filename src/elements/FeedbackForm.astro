@@ -2,11 +2,18 @@
 import Button from './Button.astro'
 import Form from './Form.astro'
 import Input from './Input.astro'
+
+export interface Props {
+  class?: string
+}
+
+const { class: className, ...rest } = Astro.props
 ---
 
 <Form
+  {...rest}
   name="feedback"
-  class="feedback-form"
+  class={`feedback-form ${className ? className : ''}`}
 >
   <Input
     class="feedback-form__input"
@@ -62,15 +69,22 @@ import Input from './Input.astro'
   .feedback-form__input {
     margin-bottom: 2rem;
 
-    transition: margin-top var(--duration-button);
+    transition: margin-top var(--duration);
 
-    &:not(:first-of-type):focus-within,
-    &:not(:first-of-type).has-data {
+    &:focus-within,
+    &.has-data {
       margin-top: 5rem;
     }
 
     &:last-of-type {
       margin-bottom: 3rem;
+    }
+
+    @media (max-width: 768px) {
+      &:focus-within,
+      &.has-data {
+        margin-top: 4rem;
+      }
     }
   }
 

@@ -70,6 +70,7 @@ const {
     --min-height: 7rem;
     --padding: 2rem;
     --offset: 1rem;
+    --duration: 0.3s;
 
     position: relative;
 
@@ -79,7 +80,7 @@ const {
 
     min-height: var(--height, var(--min-height));
 
-    transition: border-color var(--duration-button);
+    transition: border-color var(--duration);
 
     &:focus-within,
     &.has-data {
@@ -122,7 +123,7 @@ const {
 
     color: var(--text-color);
 
-    transition: color var(--duration-button);
+    transition: color var(--duration);
   }
 
   .input__placeholder {
@@ -141,11 +142,9 @@ const {
       )
     );
 
-    transform-origin: left bottom;
-
     transition:
-      color var(--duration-button),
-      transform var(--duration-button);
+      color var(--duration),
+      transform var(--duration);
 
     will-change: transform;
   }
@@ -160,9 +159,9 @@ const {
     opacity: var(--error-opacity);
 
     transition:
-      opacity var(--duration-button),
-      height var(--duration-button),
-      margin-bottom var(--duration-button);
+      opacity var(--duration),
+      height var(--duration),
+      margin-bottom var(--duration);
 
     &[data-static=''] {
       position: relative;
@@ -174,8 +173,8 @@ const {
     }
 
     .input.error &[data-static=''] {
-      height: var(--scroll-height, 0px);
-      margin-bottom: 1rem;
+      height: 3rem;
+      margin-bottom: var(--offset);
     }
 
     @media (max-width: 768px) {
@@ -193,9 +192,6 @@ const {
 </style>
 
 <script>
-  import { requestIdleCallback } from 'aptechka/utils'
-  import { windowResizer } from 'aptechka/window-resizer'
-
   export interface InputElementEvents {
     resetInput: CustomEvent
   }
@@ -246,18 +242,12 @@ const {
       this.#editableElement?.addEventListener('input', this.#inputListener)
       this.#editableElement?.addEventListener('focus', this.#focusListener)
       this.#editableElement?.addEventListener('blur', this.#blurListener)
-
-      if (this.#errorElement) {
-        windowResizer.subscribe(this.#resizeListener)
-      }
     }
 
     protected disconnectedCallback() {
       this.#editableElement?.removeEventListener('input', this.#inputListener)
       this.#editableElement?.addEventListener('focus', this.#focusListener)
       this.#editableElement?.removeEventListener('blur', this.#blurListener)
-
-      windowResizer.unsubscribe(this.#resizeListener)
     }
 
     #inputListener = () => {
@@ -329,8 +319,6 @@ const {
         this.#errorElement.setAttribute('aria-hidden', 'false')
       }
 
-      this.#resizeListener()
-
       this.classList.add('error')
     }
 
@@ -362,20 +350,6 @@ const {
       }
 
       return value
-    }
-
-    #resizeListener = () => {
-      this.#errorElement!.style.transition = 'all 0s'
-      this.#errorElement!.style.setProperty('--scroll-height', '0px')
-
-      requestIdleCallback(() => {
-        this.#errorElement!.style.transition = ''
-
-        this.#errorElement!.style.setProperty(
-          '--scroll-height',
-          this.#errorElement!.scrollHeight + 'px',
-        )
-      })
     }
   }
 
