@@ -1,0 +1,70 @@
+---
+import CommonModal from '@elements/CommonModal.astro'
+import FeedbackForm from '@elements/FeedbackForm.astro'
+
+export const modal = '#feedback'
+
+export interface Props {
+  title?: string
+  description?: string
+}
+
+const {
+  title = 'Мы&nbsp;готовы помочь&nbsp;вам!',
+  description = 'Пожалуйста, заполните форму, и&nbsp;наша команда свяжется с&nbsp;вами в&nbsp;кратчайшие сроки.',
+} = Astro.props
+---
+
+<CommonModal
+  class="feedback-modal"
+  id="feedback"
+>
+  <div class="feedback-modal__content">
+    <h2
+      class="font-h2 font-mob-h2 feedback-modal__title"
+      set:html={title}
+    />
+    <p
+      class="font-p2 font-mob-p3 feedback-modal__description"
+      set:html={description}
+    />
+    <FeedbackForm />
+  </div>
+</CommonModal>
+
+<style is:global>
+  .feedback-modal {
+  }
+
+  .feedback-modal__content {
+    padding: 5rem;
+    padding-top: 9rem;
+    width: 53.9rem;
+
+    height: max-content;
+
+    overflow: hidden;
+
+    background-color: var(--color-background);
+    border-radius: 2rem;
+
+    @media (max-width: 768px) {
+      width: 100%;
+      min-height: 100%;
+      padding: 8.4rem var(--screen-horisontal-padding) 3rem var(--screen-horisontal-padding);
+      border-radius: 0;
+    }
+  }
+
+  .feedback-modal__title {
+    margin-bottom: 1.5rem;
+
+    @media (max-width: 768px) {
+      margin-bottom: 2rem;
+    }
+  }
+
+  .feedback-modal__description {
+    margin-bottom: 3rem;
+  }
+</style>
