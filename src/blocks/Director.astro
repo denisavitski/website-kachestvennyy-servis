@@ -1,0 +1,176 @@
+---
+import Image, { type ImageDataProps } from '@elements/Image.astro'
+import { tryCreateHrefFromContact } from '@utils/href'
+
+export interface Props {
+  image?: ImageDataProps
+  heading?: string
+  name?: string
+  stats?: Array<{ title: string; value: string }>
+}
+
+const {
+  image = { src: '/images/illustrations/3.svg' },
+  heading = 'Генеральный директор УК&nbsp;«Качественный&nbsp;сервис»',
+  name = 'Смирнов Дмитрий Иванович',
+  stats = [
+    {
+      title: 'Стаж работы:',
+      value: '15 лет',
+    },
+    {
+      title: 'Контакты для связи:',
+      value: '+7 499 999-99-99',
+    },
+    {
+      title: 'Почта для связи:',
+      value: 'Info@kservice-uk.ru',
+    },
+  ],
+} = Astro.props
+---
+
+<section class="director">
+  <div class="director__inner">
+    <Image
+      class="director__image"
+      {...image}
+      lazy
+      contain
+    />
+
+    <div class="director__content">
+      <h2
+        class="font-p1 font-mob-p1 director__heading"
+        set:html={heading}
+      />
+      <div
+        class="font-h2 font-mob-h3 director__name"
+        set:html={name}
+      />
+
+      <ul class="director__stats">
+        {
+          stats.map((stat) => {
+            const value = tryCreateHrefFromContact(stat.value)
+
+            return (
+              <li class="font-p1 font-mob-p3 director__stat">
+                <div
+                  class="director__stat__title"
+                  set:html={stat.title}
+                />
+                {value.type ? (
+                  <a
+                    class="director__stat__value"
+                    href={value.href}
+                    set:html={stat.value}
+                  />
+                ) : (
+                  <div
+                    class="director__stat__value"
+                    set:html={stat.value}
+                  />
+                )}
+              </li>
+            )
+          })
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .director {
+    padding: var(--section-vertical-padding) var(--screen-horisontal-padding);
+  }
+
+  .director__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 3rem 8rem;
+
+    border-radius: 3rem;
+    background-color: var(--color-background);
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      border-radius: 2rem;
+      padding: 2rem;
+    }
+  }
+
+  .director__image {
+    width: 42.1rem;
+    height: 62.6rem;
+
+    @media (max-width: 768px) {
+      width: 19.7rem;
+      height: 28.2rem;
+
+      margin-bottom: 3rem;
+    }
+  }
+
+  .director__content {
+    width: 74.5rem;
+    margin-right: 13.4rem;
+
+    display: flex;
+    flex-direction: column;
+
+    @media (max-width: 768px) {
+      width: 100%;
+      margin-right: unset;
+    }
+  }
+
+  .director__heading {
+    margin-bottom: 5rem;
+
+    @media (max-width: 768px) {
+      margin-bottom: 3rem;
+    }
+  }
+
+  .director__name {
+    order: -1;
+    margin-bottom: 3rem;
+
+    @media (max-width: 768px) {
+      margin-bottom: 1.5rem;
+    }
+  }
+
+  .director__stats {
+    display: grid;
+    grid-auto-rows: max-content;
+    gap: 1.5rem;
+  }
+
+  .director__stat {
+    display: inline-flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .director__stat__title {
+  }
+
+  .director__stat__value {
+    a& {
+      color: var(--color-button);
+
+      @media (hover: hover) {
+        transition: color var(--duration-button);
+
+        &:hover {
+          color: var(--color-primary);
+        }
+      }
+    }
+  }
+</style>
