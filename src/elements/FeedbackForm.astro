@@ -14,6 +14,8 @@ const { class: className, ...rest } = Astro.props
   {...rest}
   name="feedback"
   class={`feedback-form ${className ? className : ''}`}
+  successTitle="Ваши данные успешно отправлены!"
+  successMessage="Наша команда свяжется с вами в кратчайшие сроки."
 >
   <Input
     class="feedback-form__input"

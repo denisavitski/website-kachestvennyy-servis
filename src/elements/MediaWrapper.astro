@@ -9,17 +9,9 @@ export interface Props extends HTMLAttributes<any> {
   contain?: boolean | undefined
   lazyBackground?: boolean | undefined
   reloadSource?: boolean | undefined
-  rounded?: boolean | undefined
 }
 
-const {
-  class: className,
-  tag = 'div',
-  lazyBackground,
-  rounded,
-  reloadSource,
-  ...rest
-} = Astro.props
+const { class: className, tag = 'div', lazyBackground, reloadSource, ...rest } = Astro.props
 
 const Tag = tag
 ---
@@ -29,7 +21,7 @@ const Tag = tag
   class:list={[className, 'media-wrapper']}
   lazy-background={lazyBackground}
   reload-source={reloadSource}
-  data-rounded={rounded}>
+>
   <slot />
 </Tag>
 
@@ -40,10 +32,6 @@ const Tag = tag
     display: block;
 
     overflow: hidden;
-
-    &[data-rounded] {
-      border-radius: 0.8rem;
-    }
   }
 
   .media-wrapper {

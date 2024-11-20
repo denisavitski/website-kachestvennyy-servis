@@ -1,4 +1,5 @@
 ---
+import Button from '@elements/Button.astro'
 import CommonModal from '@elements/CommonModal.astro'
 import Image from '@elements/Image.astro'
 
@@ -14,110 +15,82 @@ export const modal = '#form-answer'
   <div class="form-answer__content">
     <Image
       class="form-answer__image"
-      src="/images/illustrations/successful-submission.svg"
+      src="/images/icons/successful-submission.svg"
       lazy
       lazyBackground
       cover
-      rounded
     />
 
-    <div class="form-answer__text">
-      <div class="form-answer__title">Title</div>
-      <div class="form-answer__message">Message</div>
-    </div>
+    <div class="font-h3 font-mob-h2 form-answer__title">Title</div>
+    <div class="font-p2 font-mob-p3 form-answer__message">Message</div>
+    <Button
+      class="form-answer__continue"
+      modal="form-answer"
+      >Продолжить</Button
+    >
   </div>
 </CommonModal>
 
 <style is:global>
   .form-answer {
     --dominance: 1;
-
-    z-index: var(--z-form-answer);
   }
 
   .form-answer__content {
-    width: 96.4rem;
-    min-height: 42rem;
-    padding: 1.6rem;
+    padding: 5rem;
+    padding-top: 14.4rem;
+    width: 53.9rem;
 
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5rem;
 
-    border-radius: 0.8rem;
-    background-color: var(--color-white-1);
+    height: max-content;
+
+    overflow: hidden;
+
+    background-color: var(--color-background);
+    border-radius: 2rem;
 
     @media (max-width: 768px) {
-      flex-direction: column;
-      width: calc(100% - var(--screen-horisontal-padding) * 2);
-      margin: 0 auto;
-      min-height: 47.3rem;
+      width: 100%;
+      min-height: 100%;
+      gap: 3rem;
+      padding: 9.4rem var(--screen-horisontal-padding) 3rem var(--screen-horisontal-padding);
+      border-radius: 0;
     }
   }
 
   .form-answer__image {
-    --lazy-background: var(--color-white-2);
-
-    flex-shrink: 0;
-
-    width: 47.9rem;
-    height: 100%;
-
-    margin-right: 2.4rem;
+    width: 19.5rem;
+    height: 19.5rem;
 
     @media (max-width: 768px) {
-      width: 100%;
-      height: 25.6rem;
-      margin-right: 0rem;
-      margin-bottom: 2.4rem;
-    }
-  }
-
-  .form-answer__text {
-    width: 100%;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    color: var(--color-grey-1);
-
-    @media (max-width: 768px) {
-      padding: 0;
+      width: 14.3rem;
+      height: 14.3rem;
     }
   }
 
   .form-answer__title {
-    font-family: 'Code', sans-serif;
-    font-size: 4.8rem;
-    font-weight: 400;
-    line-height: 120%;
-    text-transform: uppercase;
-
-    margin-bottom: 2.4rem;
-
-    text-align: center;
+    width: 100%;
 
     @media (max-width: 768px) {
-      font-size: 2.8rem;
-      margin-bottom: 1.6rem;
+      text-align: center;
     }
   }
 
   .form-answer__message {
-    font-size: 2.4rem;
-    font-weight: 300;
-    text-align: center;
-
-    margin-bottom: 5.6rem;
+    width: 100%;
 
     @media (max-width: 768px) {
-      font-size: 1.6rem;
-      margin-bottom: 2.4rem;
+      text-align: center;
     }
   }
 
-  .form-answer__close-button {
+  .form-answer__continue {
     --type: close;
+    width: 100%;
   }
 </style>
 
