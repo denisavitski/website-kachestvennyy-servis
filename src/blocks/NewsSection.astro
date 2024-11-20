@@ -1,0 +1,144 @@
+---
+import Button from '@elements/Button.astro'
+import TextCard, { type Props as TextCardProps } from '@elements/TextCard.astro'
+
+export interface Props {
+  heading?: string
+  cards?: Array<Omit<TextCardProps, 'class'>>
+}
+
+const {
+  heading = 'Новости',
+  cards = [
+    {
+      title:
+        'Присоединяйтесь к&nbsp;команде УК&nbsp;«Качественный сервис» в&nbsp;Красково&nbsp;— мы&nbsp;ищем талантливых специалистов!',
+      description:
+        'Открыты вакансии: слесарь-сантехник, электрик, тракторист и&nbsp;разнорабочие. Заработная плата от&nbsp;40 000&nbsp;до&nbsp;90 000&nbsp;рублей&nbsp;— звоните Геннадию по&nbsp;телефону 7&nbsp;968&nbsp;869-28-58!',
+      date: '9&nbsp;ноября 2024',
+      icon: 'sun',
+      href: '/news',
+      highlite: true,
+    },
+    {
+      title: 'Новости компании',
+      description:
+        'Узнайте последние новости и&nbsp;обновления от&nbsp;УК&nbsp;«Качественный сервис» — оставайтесь в&nbsp;курсе событий и&nbsp;возможностей!',
+      icon: 'sun',
+      button: {
+        text: 'Все новости',
+        href: '/news',
+      },
+    },
+    {
+      title:
+        'Присоединяйтесь к&nbsp;встрече с&nbsp;управляющей организацией «Качественный Сервис» для&nbsp;обсуждения будущего Красково!',
+      description: '9&nbsp;октября в&nbsp;19:00&nbsp;— обсудим будущее нашего посёлка!',
+      date: '8&nbsp;ноября 2024',
+      icon: 'sun',
+      href: '/news',
+    },
+    {
+      title: 'Запуск отопительного сезона 2024–2025&nbsp;в&nbsp;Люберцах завершён!',
+      description:
+        'Если&nbsp;у&nbsp;вас&nbsp;нет&nbsp;отопления, сообщите по&nbsp;телефону 8&nbsp;800&nbsp;101-16-49&nbsp;или&nbsp;в&nbsp;личные сообщения группы ВК&nbsp;и&nbsp;Telegram.',
+      date: '7&nbsp;ноября 2024',
+      icon: 'sun',
+      href: '/news',
+    },
+  ],
+} = Astro.props
+---
+
+<!-- BLOCK -->
+<section class="news-section">
+  <h2
+    class="font-h2 font-mob-h2 news-section__heading"
+    set:html={heading}
+  />
+
+  <div class="news-section__cards">
+    {
+      cards.map((card) => {
+        return (
+          <TextCard
+            titleFont="font-h3 font-mob-p1"
+            class="news-section__card"
+            {...card}
+          />
+        )
+      })
+    }
+  </div>
+
+  <Button
+    class="news-section__all-button"
+    href="/news"
+    >Смотреть все новости</Button
+  >
+</section>
+
+<style is:global>
+  .news-section {
+    padding: var(--section-vertical-padding) var(--screen-horisontal-padding);
+  }
+
+  .news-section__heading {
+    margin-bottom: 5rem;
+
+    @media (max-width: 768px) {
+      margin-bottom: 3rem;
+    }
+  }
+
+  .news-section__cards {
+    --gap: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5rem var(--gap);
+
+    @media (max-width: 768px) {
+      gap: 3rem;
+      margin-bottom: 3rem;
+    }
+  }
+
+  .news-section__card {
+    min-height: 41rem;
+
+    @media (min-width: 769px) {
+      width: calc((100% - var(--gap)) / 2);
+
+      &:nth-child(1) {
+        width: 106rem;
+      }
+
+      &:nth-child(2) {
+        width: 52rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      width: 100%;
+      min-height: 11.7rem;
+
+      .text-card__description {
+        display: none;
+      }
+
+      div& {
+        display: none;
+      }
+    }
+  }
+
+  .news-section__all-button {
+    @media (min-width: 769px) {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      width: 100%;
+    }
+  }
+</style>

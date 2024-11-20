@@ -18,12 +18,16 @@ export interface Props {
   icon?: 'logo' | 'sun'
   iconPosition?: 'bottom' | 'top'
   date?: string
+  href?: string
+  titleFont?: string
 }
 
 const {
   class: className,
   title = 'Наша команда',
+  titleFont = 'font-h3 font-mob-h3',
   titleTag = 'div',
+  href,
   description,
   value,
   button,
@@ -34,11 +38,13 @@ const {
   ...rest
 } = Astro.props
 
+const Tag = href ? 'a' : ('div' as any)
 const TitleTag = titleTag as any
 ---
 
-<div
+<Tag
   {...rest}
+  href={href}
   class:list={['text-card', className]}
   data-highlite={highlite}
   data-icon={icon}
@@ -46,7 +52,7 @@ const TitleTag = titleTag as any
   data-button={!!button}
 >
   <TitleTag
-    class="font-h3 font-mob-h3 text-card__title"
+    class={`${titleFont} text-card__title`}
     set:html={title}
   />
 
@@ -98,7 +104,7 @@ const TitleTag = titleTag as any
       </Button>
     )
   }
-</div>
+</Tag>
 
 <style is:global>
   .text-card {
@@ -132,7 +138,9 @@ const TitleTag = titleTag as any
   }
 
   .text-card__description {
-    margin-bottom: 3rem;
+    .text-card[data-icon][data-button] & {
+      margin-bottom: 3rem;
+    }
 
     @media (max-width: 768px) {
       .text-card[data-icon]:not([data-button]) & {
@@ -204,7 +212,7 @@ const TitleTag = titleTag as any
     margin-top: 10rem;
 
     @media (max-width: 768px) {
-      margin-top: 5rem;
+      margin-top: 2rem;
     }
   }
 
