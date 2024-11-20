@@ -1,0 +1,220 @@
+---
+import { omit } from 'aptechka/utils'
+import Button from './Button.astro'
+import Icon from './Icon.astro'
+
+export interface Props {
+  class?: string
+  title?: string
+  titleTag?: string
+  description?: string
+  value?: string
+  button?: {
+    text: string
+    modal?: string
+    href?: string
+  }
+  highlite?: boolean
+  icon?: 'logo' | 'sun'
+  iconPosition?: 'bottom' | 'top'
+  date?: string
+}
+
+const {
+  class: className,
+  title = 'Наша команда',
+  titleTag = 'div',
+  description,
+  value,
+  button,
+  highlite,
+  icon,
+  iconPosition,
+  date,
+  ...rest
+} = Astro.props
+
+const TitleTag = titleTag as any
+---
+
+<div
+  {...rest}
+  class:list={['text-card', className]}
+  data-highlite={highlite}
+  data-icon={icon}
+  data-icon-position={iconPosition}
+  data-button={!!button}
+>
+  <TitleTag
+    class="font-h3 font-mob-h3 text-card__title"
+    set:html={title}
+  />
+
+  {
+    description && (
+      <div
+        class="font-p2 font-mob-p3 text-card__description"
+        set:html={description}
+      />
+    )
+  }
+
+  <slot />
+
+  {
+    icon && (
+      <Icon
+        class="text-card__icon"
+        name={icon}
+      />
+    )
+  }
+
+  {
+    value && (
+      <div
+        class="font-p2 font-mob-p3 text-card__value"
+        set:html={value}
+      />
+    )
+  }
+
+  {
+    date && (
+      <div
+        class="font-p2 font-mob-p3 text-card__date"
+        set:html={date}
+      />
+    )
+  }
+
+  {
+    button && (
+      <Button
+        class="text-card__button"
+        {...omit(button, ['text'])}
+      >
+        {button.text}
+      </Button>
+    )
+  }
+</div>
+
+<style is:global>
+  .text-card {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 3rem;
+
+    background-color: var(--color-background);
+    border-radius: 3rem;
+    overflow: hidden;
+
+    &[data-highlite] {
+      background-color: var(--color-highlite);
+    }
+
+    @media (max-width: 768px) {
+      padding: 2rem;
+      border-radius: 2rem;
+    }
+  }
+
+  .text-card__title {
+    margin-bottom: 3rem;
+
+    @media (max-width: 768px) {
+      margin-bottom:;
+    }
+  }
+
+  .text-card__description {
+    margin-bottom: 3rem;
+
+    @media (max-width: 768px) {
+      .text-card[data-icon]:not([data-button]) & {
+        max-width: 85%;
+      }
+    }
+  }
+
+  .text-card__icon {
+    position: absolute;
+
+    right: var(--x);
+    bottom: var(--y);
+
+    .text-card[data-icon-position='top'] & {
+      top: var(--y);
+      bottom: unset;
+    }
+
+    .text-card[data-icon='sun'] & {
+      --x: 3rem;
+      --y: -3.2rem;
+
+      width: 10rem;
+      height: 6.2rem;
+
+      fill: var(--color-accent);
+
+      @media (max-width: 768px) {
+        --x: 2rem;
+        --y: -1.9rem;
+
+        width: 5.6rem;
+        height: 3.5rem;
+      }
+    }
+
+    .text-card[data-icon='logo'] & {
+      --x: 3rem;
+      --y: 3rem;
+
+      width: 4rem;
+      height: 4rem;
+
+      @media (max-width: 768px) {
+        --x: 2rem;
+        --y: 2rem;
+
+        width: 3rem;
+        height: 3rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .text-card[data-button] & {
+        top: var(--y);
+        bottom: unset;
+      }
+    }
+  }
+
+  .text-card__value {
+    justify-self: flex-end;
+    margin-top: 3rem;
+  }
+
+  .text-card__date {
+    justify-self: flex-end;
+    margin-top: 10rem;
+
+    @media (max-width: 768px) {
+      margin-top: 5rem;
+    }
+  }
+
+  .text-card__button {
+    align-self: flex-start;
+
+    margin-top: auto;
+
+    @media (max-width: 768px) {
+      width: 100%;
+    }
+  }
+</style>

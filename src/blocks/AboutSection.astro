@@ -1,0 +1,150 @@
+---
+import Image from '@elements/Image.astro'
+import TextCard from '@elements/TextCard.astro'
+
+export interface Props {
+  about?: {
+    title?: string
+    description?: string
+  }
+  team?: {
+    title?: string
+    description?: string
+  }
+  approach?: {
+    title?: string
+    description?: string
+  }
+  fast?: {
+    title?: string
+    description?: string
+  }
+}
+
+const {
+  about = {
+    title: 'О&nbsp;компании',
+    description:
+      'Мы&nbsp;предлагаем полный спектр услуг по&nbsp;эксплуатации жилых зданий: ремонт и&nbsp;обслуживание инженерных коммуникаций, уборку подъездов и&nbsp;прилегающих территорий. Наша команда гарантирует бесперебойную работу всех систем дома.',
+  },
+  team = {
+    title: 'Наша команда',
+    description: 'Наши специалисты обеспечивают качественное обслуживание.',
+  },
+  approach = {
+    title: 'Индивидуальный подход',
+    description: 'Мы&nbsp;учитываем потребности каждого дома.',
+  },
+  fast = {
+    title:
+      'Мы&nbsp;быстро реагируем на&nbsp;любые обращения жильцов и&nbsp;быстро устраняем возникающие проблемы!',
+    description: 'Мы&nbsp;готовы выслушать ваши замечания и&nbsp;помочь решить возникшие проблемы.',
+  },
+} = Astro.props
+---
+
+<section class="about-section">
+  <TextCard
+    {...about}
+    class="about-section__about"
+    button={{ href: '/about', text: 'Узнать подробнее' }}
+    icon={'logo'}
+  />
+  <TextCard
+    {...team}
+    class="about-section__team"
+    icon={'logo'}
+  />
+  <TextCard
+    {...approach}
+    class="about-section__approach"
+    icon={'logo'}
+  />
+  <TextCard
+    {...fast}
+    button={{ modal: 'feedback', text: 'Связаться' }}
+    class="about-section__fast"
+  >
+    <Image
+      src={'/images/illustrations/1.svg'}
+      class="about-section__fast__image"
+      lazy
+      contain
+    />
+  </TextCard>
+</section>
+
+<style is:global>
+  .about-section {
+    padding: var(--section-vertical-padding) var(--screen-horisontal-padding);
+
+    display: grid;
+
+    gap: 1.3rem 2rem;
+
+    grid-template-columns: 38.5rem 38.5rem 79rem;
+    grid-template-rows: minmax(36.3rem, max-content) minmax(29.3rem, max-content);
+
+    grid-template-areas:
+      'about about fast'
+      'team approach fast';
+
+    @media (max-width: 768px) {
+      gap: 3rem;
+      grid-template-columns: 100%;
+      grid-template-rows: unset;
+      grid-auto-rows: minmax(19.5rem, max-content);
+
+      grid-template-areas:
+        'about'
+        'team'
+        'approach'
+        'fast';
+    }
+  }
+
+  .about-section__about {
+    grid-area: about;
+  }
+
+  .about-section__team {
+    grid-area: team;
+  }
+
+  .about-section__approach {
+    grid-area: approach;
+  }
+
+  .about-section__fast {
+    grid-area: fast;
+    position: relative;
+
+    .text-card__description {
+      width: 41.4rem;
+
+      @media (max-width: 768px) {
+        width: 100%;
+      }
+    }
+  }
+
+  .about-section__fast__image {
+    position: absolute;
+    bottom: 0;
+    right: -2.3rem;
+
+    width: 41.8rem;
+    height: 42.7rem;
+
+    @media (max-width: 768px) {
+      position: relative;
+      bottom: unset;
+      right: unset;
+
+      width: 27.7rem;
+      height: 27.7rem;
+
+      margin-bottom: 3rem;
+    }
+  }
+</style>

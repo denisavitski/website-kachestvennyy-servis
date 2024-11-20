@@ -39,6 +39,7 @@ if (modal) {
 <Tag
   {...rest}
   target={modal}
+  href={href}
   class:list={['primary-button', className]}
   data-theme={theme}
 >
@@ -54,7 +55,7 @@ if (modal) {
   }
 
   <span class="primary-button__inner">
-    <span class="font-button primary-button__name"><slot>Кнопка</slot></span>
+    <span class="font-button font-mob-p2 primary-button__name"><slot>Кнопка</slot></span>
 
     {
       theme === 'message' && (
