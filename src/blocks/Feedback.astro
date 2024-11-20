@@ -66,11 +66,14 @@ const {
 
 <style is:global>
   .feedback {
+    padding: var(--section-vertical-padding) 0;
+
     display: flex;
     justify-content: space-between;
 
     @media (max-width: 768px) {
-      padding: 0 var(--screen-horisontal-padding);
+      padding: var(--section-vertical-padding) var(--screen-horisontal-padding);
+      padding-bottom: calc(var(--section-vertical-padding) * 2);
       flex-direction: column;
     }
   }

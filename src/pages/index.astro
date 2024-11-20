@@ -1,4 +1,9 @@
 ---
+import AboutSection from '@blocks/AboutSection.astro'
+import Feedback from '@blocks/Feedback.astro'
+import HomeIntro from '@blocks/HomeIntro.astro'
+import NewsSection from '@blocks/NewsSection.astro'
+import Problems from '@blocks/Problems.astro'
 import Layout from '@layout/Layout.astro'
 ---
 
@@ -10,5 +15,9 @@ import Layout from '@layout/Layout.astro'
     cover: '/images/seo/home.jpg',
   }}
 >
-  <h1>УК Качественный Сервис</h1>
+  <HomeIntro />
+  <AboutSection />
+  <NewsSection />
+  <Problems />
+  <Feedback />
 </Layout>

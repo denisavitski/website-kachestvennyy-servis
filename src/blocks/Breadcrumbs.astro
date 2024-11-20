@@ -1,0 +1,74 @@
+---
+export interface Props {
+  class?: string
+  links?: Array<{ name: string; href: string }>
+}
+
+const {
+  class: className,
+  links = [
+    { name: 'Главная', href: '/' },
+    { name: 'О компании', href: '/about' },
+  ],
+  ...rest
+} = Astro.props
+---
+
+<!-- BLOCK -->
+<div
+  {...rest}
+  class:list={['breadcrumbs', className]}
+>
+  {
+    links.map((link, i, arr) => {
+      return (
+        <a
+          href={link.href}
+          data-prefetch
+          class="font-p2 font-mob-p3 breadcrumbs__link"
+          data-current={i === arr.length - 1}
+        >
+          <span
+            class="breadcrumbs__link__name"
+            set:html={link.name}
+          />
+        </a>
+      )
+    })
+  }
+</div>
+
+<style is:global>
+  .breadcrumbs {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 5rem var(--screen-horisontal-padding) 7rem var(--screen-horisontal-padding);
+  }
+
+  .breadcrumbs__link {
+  }
+
+  .breadcrumbs__link__name {
+    color: var(--color-button);
+
+    .breadcrumbs__link:last-child & {
+      color: var(--color-primary);
+    }
+
+    @media (hover: hover) {
+      transition: color var(--duration-button);
+
+      .breadcrumbs__link:hover & {
+        color: var(--color-primary);
+      }
+    }
+
+    .breadcrumbs__link:not(:last-child) &::after {
+      content: '/';
+      display: inline-block;
+      margin: 0 0.5rem;
+      color: inherit;
+    }
+  }
+</style>

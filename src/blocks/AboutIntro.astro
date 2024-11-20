@@ -1,0 +1,235 @@
+---
+import Image, { type ImageDataProps } from '@elements/Image.astro'
+
+export interface Props {
+  top?: {
+    title: string
+    description: string
+  }
+  middle?: {
+    image: ImageDataProps
+    title: string
+    description: string
+  }
+  bottom?: {
+    images: Array<ImageDataProps>
+    title: string
+    description: string
+  }
+}
+
+const {
+  top = {
+    title: 'О&nbsp;компании «Качественный сервис»',
+    description:
+      'Наша задача&nbsp;— сделать обслуживание жилых домов максимально качественным, оперативным и&nbsp;доступным для&nbsp;всех жителей',
+  },
+  middle = {
+    title: 'Ваш&nbsp;надёжный партнёр в&nbsp;управлении домом',
+    description:
+      'Управляющая компания «Качественный сервис» стремится обеспечить комфорт и&nbsp;безопасность для&nbsp;всех жителей многоквартирных домов. Мы&nbsp;предоставляем широкий спектр услуг, включая ремонт и&nbsp;обслуживание инженерных систем, уборку и&nbsp;благоустройство территорий. Наша команда профессионалов гарантирует высокое качество и&nbsp;своевременность выполнения работ.',
+    image: { src: '/images/about/1.jpg' },
+  },
+  bottom = {
+    title: 'Индивидуальный подход и&nbsp;безупречное качество',
+    description:
+      '«Качественный сервис» — это&nbsp;надёжность и&nbsp;внимание к&nbsp;каждому клиенту. Мы&nbsp;оперативно реагируем на&nbsp;запросы жильцов и&nbsp;предлагаем индивидуальные решения. Наши высококвалифицированные специалисты обеспечивают бесперебойную работу всех систем и&nbsp;создают комфортные условия проживания.',
+    images: [{ src: '/images/about/2.jpg' }, { src: '/images/about/3.jpg' }],
+  },
+} = Astro.props
+---
+
+<div class="about-intro">
+  <div class="about-intro__top">
+    <h1
+      class="font-h1 font-mob-h1 about-intro__top__heading"
+      set:html={top.title}
+    />
+    <p
+      class="font-p1 font-mob-p3 about-intro__top__description"
+      set:html={top.description}
+    />
+  </div>
+
+  <div class="about-intro__middle">
+    <Image
+      {...middle.image}
+      lazy
+      lazyBackground
+      cover
+      class="about-intro__middle__image"
+    />
+    <div class="about-intro__middle__text">
+      <h2
+        class="font-h3 font-mob-h3 about-intro__middle__heading"
+        set:html={middle.title}
+      />
+      <p
+        class="font-p2 font-mob-p3 about-intro__middle__description"
+        set:html={middle.description}
+      />
+    </div>
+  </div>
+
+  <div class="about-intro__bottom">
+    <div class="about-intro__bottom__text">
+      <h2
+        class="font-h3 font-mob-h3 about-intro__bottom__heading"
+        set:html={bottom.title}
+      />
+      <p
+        class="font-p2 font-mob-p3 about-intro__bottom__description"
+        set:html={bottom.description}
+      />
+    </div>
+
+    <div class="about-intro__bottom__images">
+      {
+        bottom.images.map((image) => {
+          return (
+            <Image
+              {...image}
+              lazy
+              lazyBackground
+              cover
+              class="about-intro__bottom__image"
+            />
+          )
+        })
+      }
+    </div>
+  </div>
+</div>
+
+<style is:global>
+  .about-intro {
+    padding: var(--section-vertical-padding) var(--screen-horisontal-padding);
+    padding-top: 0;
+  }
+
+  .about-intro__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    width: 100%;
+    margin-bottom: 7rem;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      margin-bottom: 5rem;
+    }
+  }
+
+  .about-intro__top__heading {
+    width: 72.3rem;
+
+    @media (max-width: 768px) {
+      width: 100%;
+      margin-bottom: 3rem;
+    }
+  }
+
+  .about-intro__top__description {
+    width: 72.3rem;
+
+    @media (max-width: 768px) {
+      width: 100%;
+    }
+  }
+
+  .about-intro__middle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding-right: 6rem;
+    margin-bottom: 5rem;
+
+    @media (max-width: 768px) {
+      padding-right: 0;
+      flex-direction: column;
+    }
+  }
+
+  .about-intro__middle__image {
+    width: 79rem;
+    height: 41.4rem;
+
+    border-radius: 3rem;
+
+    @media (max-width: 768px) {
+      width: 100%;
+      height: 17.5rem;
+      margin-bottom: 3rem;
+
+      border-radius: 2rem;
+    }
+  }
+
+  .about-intro__middle__text {
+    width: 70rem;
+
+    @media (max-width: 768px) {
+      width: 100%;
+    }
+  }
+
+  .about-intro__middle__heading {
+    margin-bottom: 3rem;
+  }
+
+  .about-intro__middle__description {
+  }
+
+  .about-intro__bottom {
+    display: flex;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+    }
+  }
+
+  .about-intro__bottom__text {
+    width: 53.4rem;
+
+    @media (max-width: 768px) {
+      width: 100%;
+      margin-bottom: 3rem;
+    }
+  }
+
+  .about-intro__bottom__heading {
+    margin-bottom: 3rem;
+  }
+
+  .about-intro__bottom__description {
+  }
+
+  .about-intro__bottom__images {
+    display: flex;
+    gap: 1.5rem;
+
+    @media (max-width: 768px) {
+      display: contents;
+    }
+  }
+
+  .about-intro__bottom__image {
+    width: 50rem;
+    height: 29rem;
+
+    border-radius: 3rem;
+
+    @media (max-width: 768px) {
+      width: 100%;
+      height: 19.5rem;
+      border-radius: 2rem;
+
+      &:first-child {
+        order: -1;
+        margin-bottom: 3rem;
+      }
+    }
+  }
+</style>
