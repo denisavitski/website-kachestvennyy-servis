@@ -1,0 +1,146 @@
+---
+import Image, { type ImageDataProps } from '@elements/Image.astro'
+
+export interface Props {
+  heading?: string
+  description?: string
+  image?: ImageDataProps
+  advantages?: Array<string>
+}
+
+const {
+  heading = 'УК&nbsp;Качественный Сервис',
+  description = 'Управляющая компания «Качественный сервис» является надёжным партнёром в&nbsp;сфере управления и&nbsp;обслуживания многоквартирных домов.',
+  image = { src: '/images/home/1.jpg', alt: '' },
+  advantages = ['Обслуживаем 116 домов', 'Быстро реагируем на жалобы'],
+} = Astro.props
+---
+
+<div class="home-intro">
+  <div class="home-intro__first">
+    <h1
+      class="font-h1 font-mob-h1 home-intro__heading"
+      set:html={heading}
+    />
+
+    <p
+      class="font-p2 font-mob-p3 home-intro__description"
+      set:html={description}
+    />
+  </div>
+
+  <div class="home-intro__last">
+    <Image
+      class="home-intro__image"
+      {...image}
+      lazy
+      lazyBackground
+      cover
+    />
+
+    <ul class="home-intro__advantages">
+      {
+        advantages.map((advantage) => {
+          return (
+            <li
+              class="font-p2 font-mob-p3 home-intro__advantage"
+              set:html={advantage}
+            />
+          )
+        })
+      }
+    </ul>
+  </div>
+</div>
+
+<style is:global>
+  .home-intro {
+    padding: 7rem var(--screen-horisontal-padding) var(--section-vertical-padding)
+      var(--screen-horisontal-padding);
+
+    @media (max-width: 768px) {
+      padding: 3rem var(--screen-horisontal-padding) var(--section-vertical-padding)
+        var(--screen-horisontal-padding);
+    }
+  }
+
+  .home-intro__first {
+    width: 75.9rem;
+
+    @media (max-width: 768px) {
+      width: 100%;
+    }
+  }
+
+  .home-intro__heading {
+    margin-bottom: 3rem;
+
+    @media (min-width: 769px) {
+      margin-top: 1rem;
+    }
+  }
+
+  .home-intro__description {
+    @media (max-width: 768px) {
+      margin-bottom: 3rem;
+    }
+  }
+
+  .home-intro__last {
+  }
+
+  .home-intro__image {
+    width: 100%;
+    height: 60rem;
+
+    @media (min-width: 769px) {
+      clip-path: url(#shape-1);
+      margin-top: -17rem;
+    }
+
+    @media (max-width: 768px) {
+      height: 18.9rem;
+      border-radius: 2rem;
+
+      margin-bottom: 3rem;
+    }
+  }
+
+  .home-intro__advantages {
+    width: 68.2rem;
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3rem;
+
+    @media (min-width: 769px) {
+      margin-top: -8rem;
+    }
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      gap: 1.5rem;
+
+      width: 100%;
+    }
+  }
+
+  .home-intro__advantage {
+    padding: 2.5rem 3rem;
+
+    @media (min-width: 769px) {
+      background-color: var(--color-background-darker);
+      border-radius: 6rem;
+    }
+
+    @media (max-width: 768px) {
+      padding: 2rem;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-bottom: 0.1rem solid var(--color-button);
+    }
+  }
+</style>

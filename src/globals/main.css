@@ -44,6 +44,7 @@ body {
   --color-surface: #fafcff;
   --color-button: #7091c7;
   --color-background: #edf4ff;
+  --color-background-darker: #dde9fd;
   --color-accent: #ffb81c;
   --color-grey-light: #bababa;
   --color-grey-dark: #8c8c8c;
@@ -99,7 +100,7 @@ body {
 
   @media (max-width: 768px) {
     --screen-horisontal-padding: 2rem;
-    --section-vertical-padding: 6.6rem;
+    --section-vertical-padding: 4.5rem;
     --header-height: 6.6rem;
   }
 

@@ -6,6 +6,7 @@ import Scrollbar from '@singletons/Scrollbar.astro'
 
 import Head from './Head.astro'
 import { type Props as SeoProps } from './Seo.astro'
+import Masks from '@singletons/Masks.astro'
 
 export interface Props {
   header?: boolean
@@ -29,6 +30,7 @@ const { header = true, footer = true, seo } = Astro.props
       {header && <Header />}
 
       <FormAnswer />
+      <Masks />
 
       <div
         data-morph
