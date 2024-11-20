@@ -1,0 +1,48 @@
+---
+import Arrow from './Arrow.astro'
+
+export interface Props {
+  class?: string
+  type?: 'prev' | 'next'
+}
+
+const { class: className, type = 'next', ...rest } = Astro.props
+---
+
+<e-scroll-step-button
+  {...rest}
+  class:list={['slider-button arrow-owner', className]}
+  data-type={type}
+>
+  <Arrow class="slider-button__arrow" />
+</e-scroll-step-button>
+
+<style is:global>
+  .slider-button {
+    display: inline-block;
+
+    transition: opacity var(--duration-button);
+
+    user-select: none;
+
+    &[data-type='prev'] {
+      --step: -1;
+      transform: rotate(90deg);
+    }
+
+    &[data-type='next'] {
+      --step: 1;
+      transform: rotate(-90deg);
+    }
+
+    &[disabled] {
+      opacity: var(--disabled-opacity, 0.3);
+      pointer-events: none;
+    }
+
+    &[disabled] {
+      opacity: var(--disabled-opacity, 0.3);
+      pointer-events: none;
+    }
+  }
+</style>

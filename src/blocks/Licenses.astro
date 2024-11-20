@@ -1,0 +1,87 @@
+---
+import SliderButtons from '@elements/SliderButtons.astro'
+import LicenseCard, { type Props as LicenseCardProps } from '@elements/LicenseCard.astro'
+
+export interface Props {
+  heading?: string
+  licenses?: Array<Omit<LicenseCardProps, 'class'>>
+}
+
+const {
+  heading = 'Лицензии и&nbsp;сертификаты',
+  licenses = [
+    {
+      image: { src: '/images/certificates/1.jpg' },
+      description:
+        'Сертификат, подтверждающий, что&nbsp;система менеджмента качества, применяемая в&nbsp;УК&nbsp;«Качественный сервис» при&nbsp;предоставлении услуг, соответствует требованиям STB ISO 9001–2009.',
+    },
+    {
+      image: { src: '/images/certificates/1.jpg' },
+      description:
+        'Сертификат, подтверждающий, что&nbsp;система менеджмента качества, применяемая в&nbsp;УК&nbsp;«Качественный сервис» при&nbsp;предоставлении услуг, соответствует требованиям STB ISO 9001–2009.',
+    },
+    {
+      image: { src: '/images/certificates/1.jpg' },
+      description:
+        'Сертификат, подтверждающий, что&nbsp;система менеджмента качества, применяемая в&nbsp;УК&nbsp;«Качественный сервис» при&nbsp;предоставлении услуг, соответствует требованиям STB ISO 9001–2009.',
+    },
+    {
+      image: { src: '/images/certificates/1.jpg' },
+      description:
+        'Сертификат, подтверждающий, что&nbsp;система менеджмента качества, применяемая в&nbsp;УК&nbsp;«Качественный сервис» при&nbsp;предоставлении услуг, соответствует требованиям STB ISO 9001–2009.',
+    },
+  ],
+} = Astro.props
+---
+
+<section class="licenses">
+  <h2
+    class="font-h2 font-mob-h2 licenses__heading"
+    set:html={heading}
+  />
+
+  <e-scroll class="licenses__slider">
+    <SliderButtons />
+
+    {
+      licenses.map((license) => {
+        return <LicenseCard {...license} />
+      })
+    }
+  </e-scroll>
+</section>
+
+<style is:global>
+  .licenses {
+    padding: var(--section-vertical-padding) var(--screen-horisontal-padding);
+
+    @media (max-width: 768px) {
+      padding-bottom: 18.4rem;
+    }
+  }
+
+  .licenses__heading {
+    margin-bottom: 5rem;
+
+    @media (max-width: 768px) {
+      margin-bottom: 3rem;
+    }
+  }
+
+  .licenses__slider {
+    --axis: x;
+    --gap: 8.4rem;
+    --sections-in-view: 2;
+    --sectional: true;
+    --auto-size: true;
+    --overflow: hidden;
+
+    display: flex;
+    gap: var(--gap);
+
+    @media (max-width: 768px) {
+      --gap: 2rem;
+      --sections-in-view: 1;
+    }
+  }
+</style>

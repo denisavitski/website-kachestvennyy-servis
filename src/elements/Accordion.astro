@@ -1,0 +1,22 @@
+---
+export interface Props {
+  class?: string
+}
+
+const { class: className, ...rest } = Astro.props
+---
+
+<e-accordion
+  {...rest}
+  class:list={['accordion', className]}
+>
+  <slot />
+</e-accordion>
+
+<style is:global>
+  .accordion {
+    display: grid;
+    gap: 3rem;
+    grid-auto-rows: max-content;
+  }
+</style>

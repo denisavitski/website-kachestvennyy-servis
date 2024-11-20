@@ -1,0 +1,80 @@
+---
+import Arrow from './Arrow.astro'
+
+export interface Props {
+  class?: string
+}
+
+const { class: className, ...rest } = Astro.props
+---
+
+<div
+  {...rest}
+  class:list={['accordion-item', className]}
+>
+  <div class="accordion-item__head arrow-owner">
+    <div class="accordion-item__head__content">
+      <slot name="head" />
+    </div>
+    <Arrow class="accordion-item__head__arrow" />
+  </div>
+  <div class="accordion-item__body">
+    <div class="accordion-item__content">
+      <slot />
+    </div>
+  </div>
+</div>
+
+<style is:global>
+  .accordion-item {
+    background-color: var(--color-background);
+    border-radius: var(--border-radius);
+  }
+
+  .accordion-item.opened .arrow__icon {
+    transform: scaleY(-1);
+  }
+
+  .accordion-item__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 7rem;
+
+    padding: var(--padding, 5rem);
+
+    user-select: none;
+
+    @media (max-width: 768px) {
+      padding: var(--padding, 2rem);
+    }
+  }
+
+  .accordion-item__head__content {
+    width: 100%;
+  }
+
+  .accordion-item__head__arrow {
+    flex-shrink: 0;
+
+    @media (max-width: 768px) {
+      width: 4.4rem;
+      height: 4.4rem;
+    }
+  }
+
+  .accordion-item__body {
+    height: 0;
+    overflow: hidden;
+    transition: height var(--duration-button);
+  }
+
+  .accordion-item__content {
+    padding: var(--padding, 5rem);
+    padding-top: 0;
+
+    @media (max-width: 768px) {
+      padding: var(--padding, 2rem);
+    }
+  }
+</style>

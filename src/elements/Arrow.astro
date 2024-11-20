@@ -1,0 +1,71 @@
+---
+import Icon from './Icon.astro'
+
+export interface Props {
+  class?: string
+}
+
+const { class: className, ...rest } = Astro.props
+---
+
+<span
+  {...rest}
+  class:list={['arrow', className]}
+>
+  <Icon
+    name="tailless-arrow"
+    class="arrow__icon"
+  />
+</span>
+
+<style is:global>
+  .arrow {
+    --background: var(--color-highlite);
+    --fill: var(--color-primary);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 6.4rem;
+    height: 6.4rem;
+
+    border-radius: 50%;
+    background-color: var(--background);
+
+    transition: background-color var(--duration-button);
+
+    @media (hover: hover) {
+      .arrow-owner:not([disabled]):not(.disabled):hover &,
+      &:not([disabled]):not(.disabled):hover {
+        --background: var(--color-primary);
+        --fill: var(--color-surface);
+      }
+
+      /* .arrow-owner:not([disabled]):not(.disabled):active &,
+      &:not([disabled]):not(.disabled):active {
+        --background: var(--color-highlite);
+        --fill: var(--color-primary);
+      } */
+    }
+  }
+
+  &[disabled],
+  &.disabled,
+  .arrow-owner[disabled] &,
+  .arrow-owner.disabled & {
+    --background: var(--color-grey-light);
+    --fill: var(--color-grey-dark);
+  }
+
+  .arrow__icon {
+    width: 1.2rem;
+    height: 1.2rem;
+
+    transition:
+      fill var(--duration-button),
+      transform var(--duration-button);
+
+    fill: var(--fill);
+  }
+</style>

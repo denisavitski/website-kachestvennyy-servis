@@ -1,0 +1,30 @@
+---
+import AboutIntro from '@blocks/AboutIntro.astro'
+import Breadcrumbs from '@blocks/Breadcrumbs.astro'
+import Director from '@blocks/Director.astro'
+import Feedback from '@blocks/Feedback.astro'
+import Licenses from '@blocks/Licenses.astro'
+import Vacancies from '@blocks/Vacancies.astro'
+import Layout from '@layout/Layout.astro'
+---
+
+<Layout
+  seo={{
+    title: 'УК Качественный Сервис: О нас',
+    description:
+      'Управляющая компания «Качественный сервис» является надёжным партнёром в сфере управления и обслуживания многоквартирных домов.',
+    cover: '/images/seo/home.jpg',
+  }}
+>
+  <Breadcrumbs
+    links={[
+      { name: 'Главная', href: '/' },
+      { name: 'О компании', href: '/about' },
+    ]}
+  />
+  <AboutIntro />
+  <Director />
+  <Licenses />
+  <Vacancies />
+  <Feedback />
+</Layout>

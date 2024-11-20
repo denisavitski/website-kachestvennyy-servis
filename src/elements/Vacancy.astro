@@ -1,0 +1,255 @@
+---
+import { tryCreateHrefFromContact } from '@utils/href'
+import AccordionItem from './AccordionItem.astro'
+
+export interface Props {
+  class?: string
+  title?: string
+  requirements?: Array<string>
+  salary?: string
+  contacts?: Array<{ title: string; value: string }>
+  description?: string
+}
+
+const {
+  class: className,
+  title = 'Слесарь-сантехник',
+  requirements = ['п.&nbsp;Красково', 'Опыт более 3&nbsp;лет', 'График работы 5/2'],
+  salary = 'от&nbsp;40,000&nbsp;₽',
+  description = `
+    <h4>Обязанности:</h4>
+    <ul>
+      <li>Выезд к&nbsp;клиентам для&nbsp;выполнения сантехнических работ, согласно заявок;</li>
+      <li>Взаимодействие с&nbsp;клиентами и&nbsp;администраторами;</li>
+      <li>Приём и&nbsp;сдача выручки (нал/безнал).</li>
+    </ul>
+    <h4>Требования:</h4>
+    <ul>
+      <li>Опыт работы сантехником от&nbsp;40,000&nbsp;₽</li>
+      <li>Наличие собственного автомобиля</li>
+      <li>Наличие собственного инструмента;</li>
+      <li>Трудолюбие, честность и&nbsp;порядочность.</li>
+    </ul>
+    <h4>Условия:</h4>
+    <ul>
+      <li>График работы&nbsp;— 10:00–21:00 (5/2);</li>
+      <li>Трудоустройство по&nbsp;договору подряда, с&nbsp;возможным дальнейшим оформлением в&nbsp;штат компании;</li>
+      <li>Компенсация топлива для&nbsp;рабочих целей;</li>
+      <li>Заработная плата от&nbsp;40,000&nbsp;₽ на&nbsp;руки (% от&nbsp;выручки выполненных заказов).</li>
+    </ul>
+  `,
+  contacts = [
+    {
+      title: 'Все вопросы по&nbsp;телефону:',
+      value: '7 968 869-28-58',
+    },
+    {
+      title: 'Резюме вы&nbsp;можете отправить на&nbsp;почту:',
+      value: 'Info@kservice-uk.ru',
+    },
+  ],
+  ...rest
+} = Astro.props
+---
+
+<AccordionItem
+  {...rest}
+  class={`vacancy ${className}`}
+>
+  <div
+    class="vacancy__head"
+    slot="head"
+  >
+    <div class="vacancy__head__left">
+      <h3
+        class="font-h3 font-mob-h3 vacancy__head__title"
+        set:html={title}
+      />
+      <div class="vacancy__head__requirements">
+        {
+          requirements.map((req) => {
+            return (
+              <div
+                class="font-p2 vacancy__head__requirements__item"
+                set:html={req}
+              />
+            )
+          })
+        }
+      </div>
+    </div>
+    <div
+      class="font-h3 font-mob-p3 vacancy__head__salary"
+      set:html={salary}
+    />
+  </div>
+  <div class="vacancy__body">
+    <div
+      class="vacancy__description"
+      set:html={description}
+    />
+    <div class="vacancy__contacts">
+      {
+        contacts.map((contact) => {
+          return (
+            <div class="font-p1 font-mob-p2 vacancy__contact">
+              <div
+                class="vacancy__contact__title"
+                set:html={contact.title}
+              />
+              <a
+                class="vacancy__contact__value"
+                href={tryCreateHrefFromContact(contact.value).href}
+                set:html={contact.value}
+              />
+            </div>
+          )
+        })
+      }
+    </div>
+  </div>
+</AccordionItem>
+
+<style is:global>
+  .vacancy__head {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    @media (max-width: 768px) {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+
+  .vacancy__head__left {
+    @media (max-width: 768px) {
+      margin-bottom: 1.5rem;
+    }
+  }
+
+  .vacancy__head__title {
+    @media (min-width: 769px) {
+      margin-bottom: 3rem;
+    }
+  }
+
+  .vacancy__head__requirements {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7rem;
+
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+
+  .vacancy__head__requirements__item {
+  }
+
+  .vacancy__head__salary {
+  }
+
+  .vacancy__body {
+  }
+
+  .vacancy__description {
+    font-size: 2rem;
+
+    @media (max-width: 768px) {
+      font-size: 1.5rem;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-size: 2.5rem;
+      font-weight: 400;
+
+      margin-bottom: 3rem;
+
+      @media (max-width: 768px) {
+        font-size: 2rem;
+
+        margin-bottom: 2rem;
+      }
+    }
+
+    ul,
+    ol {
+      display: grid;
+      gap: 1.5rem;
+
+      margin-bottom: 5rem;
+
+      @media (max-width: 768px) {
+        margin-bottom: 3rem;
+      }
+    }
+
+    ul {
+      list-style: disc;
+    }
+
+    ol {
+      list-style: decimal;
+    }
+
+    p {
+      margin-bottom: 2rem;
+
+      @media (max-width: 768px) {
+        margin-bottom: 1rem;
+      }
+    }
+
+    li::marker {
+      color: var(--color-primary);
+    }
+
+    li {
+      list-style-position: inside;
+    }
+
+    li,
+    p {
+      font-size: 2rem;
+
+      @media (max-width: 768px) {
+        font-size: 1.5rem;
+      }
+    }
+  }
+
+  .vacancy__contacts {
+    display: grid;
+    grid-auto-rows: max-content;
+    gap: 3rem;
+
+    @media (max-width: 768px) {
+      gap: 2.5rem;
+    }
+  }
+
+  .vacancy__contact {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  .vacancy__contact__title {
+  }
+
+  .vacancy__contact__value {
+    color: var(--color-button);
+  }
+</style>
