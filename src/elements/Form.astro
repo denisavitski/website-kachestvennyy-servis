@@ -14,7 +14,7 @@ export interface CommmonFormProps {
 
 export interface Props extends HTMLAttributes<'div'> {
   name?: string
-  url?: string
+  handler?: string
   successTitle?: string | undefined | false
   successMessage?: string | undefined | false
   errorMessage?: string | undefined | false
@@ -23,7 +23,7 @@ export interface Props extends HTMLAttributes<'div'> {
 
 const {
   name = 'form',
-  url = '/test',
+  handler = '/test',
   successTitle,
   successMessage,
   errorMessage,
@@ -33,7 +33,7 @@ const {
 ---
 
 <!-- 
-  Если указан url отличный от /test, данные из формы отправятся по нему, 
+  Если указан handler отличный от /test, данные из формы отправятся по нему, 
   и по успешному завершению откроется модалка. 
 -->
 <e-form
@@ -42,7 +42,7 @@ const {
   success-message={successMessage}
   error-message={errorMessage}
   {name}
-  {url}
+  {handler}
   {reusable}
 >
   <form>
@@ -68,9 +68,14 @@ const {
     #buttonElement: HTMLButtonElement | null = null
     #inputElements: Array<HTMLInputElement> | null = null
     #sended = false
+    #handler = '/test'
+    #isReusable = false
 
     protected connectedCallback() {
       this.#formElement = this.querySelector('form')
+
+      this.#handler = this.getAttribute('handler') || '/test'
+      this.#isReusable = this.hasAttribute('reusable')
 
       if (this.#formElement) {
         this.#formElement.addEventListener('submit', this.#submitListener)
@@ -81,11 +86,14 @@ const {
           inputElement.addEventListener('input', this.#inputListener)
         })
 
-        this.#buttonElement = this.#formElement.querySelector(
-          'button[type="submit"]',
-        )
+        this.#buttonElement = this.#formElement.querySelector('button[type="submit"]')
 
         this.#inputListener()
+
+        if (this.#handler === 'fetchit') {
+          document.addEventListener('fetchit:success', this.#fetchitSuccesListener as EventListener)
+          document.addEventListener('fetchit:error', this.#fetchitErrorListener as EventListener)
+        }
       }
     }
 
@@ -95,20 +103,15 @@ const {
       )
 
       this.#formElement?.removeEventListener('submit', this.#submitListener)
+
+      document.removeEventListener('fetchit:success', this.#fetchitSuccesListener as EventListener)
+      document.removeEventListener('fetchit:error', this.#fetchitErrorListener as EventListener)
     }
 
     #submitListener = async (e: SubmitEvent) => {
-      const url = this.getAttribute('url')
-
-      if (!url) {
-        return
-      }
-
       e.preventDefault()
 
-      const isReusable = this.hasAttribute('reusable')
-
-      if (this.#sended && !isReusable) {
+      if (this.#handler === 'fetchit' || (this.#sended && !this.#isReusable)) {
         return
       }
 
@@ -124,7 +127,7 @@ const {
       this.classList.add('pending')
 
       try {
-        if (url === '/test') {
+        if (this.#handler === '/test') {
           await new Promise<void>((res) => {
             setTimeout(() => {
               res()
@@ -132,43 +135,16 @@ const {
             }, 50)
           })
         } else {
-          await fetch(url, {
+          await fetch(this.#handler, {
             method: 'POST',
             body: formData,
           })
         }
 
-        const answerElement = document.querySelector('e-form-answer')
-
-        if (answerElement) {
-          const successTitle = this.getAttribute('success-title')
-          const successMessage = this.getAttribute('success-message')
-
-          if (successTitle && successMessage) {
-            answerElement.setText(successTitle, successMessage)
-            answerElement.open()
-          }
-        }
-
-        this.classList.add('success')
-
-        if (isReusable) {
-          this.#inputElements?.forEach((element) => {
-            const customInput = element.closest('e-input') as HTMLElement
-
-            if (customInput) {
-              dispatchEvent(customInput, 'resetInput')
-            }
-          })
-        }
+        this.#success()
       } catch (e) {
         console.error(e)
-
-        const errorMessage = this.getAttribute('error-message')
-
-        alert(errorMessage)
-
-        this.#sended = false
+        this.#error()
       }
 
       this.classList.remove('pending')
@@ -186,6 +162,58 @@ const {
           this.#buttonElement.disabled = true
         }
       }
+    }
+
+    #fetchitSuccesListener = (e: CustomEvent) => {
+      console.log('[fetchit success event]', e)
+
+      const { form } = (e as CustomEvent)?.detail as { form: HTMLFormElement }
+
+      if (this.#formElement === form) {
+        this.#success()
+      }
+    }
+
+    #fetchitErrorListener = (e: CustomEvent) => {
+      console.log('[fetchit error event]', e)
+
+      const { form } = (e as CustomEvent)?.detail as { form: HTMLFormElement }
+
+      if (this.#formElement === form) {
+        this.#error()
+      }
+    }
+
+    #success() {
+      const answerElement = document.querySelector('e-form-answer')
+
+      if (answerElement) {
+        const successTitle = this.getAttribute('success-title')
+        const successMessage = this.getAttribute('success-message')
+
+        if (successTitle && successMessage) {
+          answerElement.setText(successTitle, successMessage)
+          answerElement.open()
+        }
+      }
+
+      if (this.#isReusable) {
+        this.#inputElements?.forEach((element) => {
+          const customInput = element.closest('e-input') as HTMLElement
+
+          if (customInput) {
+            dispatchEvent(customInput, 'resetInput')
+          }
+        })
+      }
+    }
+
+    #error() {
+      const errorMessage = this.getAttribute('error-message')
+
+      alert(errorMessage)
+
+      this.#sended = false
     }
   }
 

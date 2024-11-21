@@ -4,7 +4,7 @@ export class ImageCloakElement extends HTMLElement {
 
   public updateImage(src: string, alt?: string | undefined | null) {
     if (this.#imageElement) {
-      this.#imageElement.src = src
+      this.#imageElement.srcset = src
       this.#imageElement.alt = alt || ''
     }
   }
@@ -13,7 +13,8 @@ export class ImageCloakElement extends HTMLElement {
     this.#imageElement = this.querySelector('img')
 
     if (this.#imageElement) {
-      const src = this.#imageElement.getAttribute('src')
+      const src =
+        this.#imageElement.getAttribute('src') || this.#imageElement.getAttribute('srcset')
 
       if (!this.#imageElement.complete) {
         this.#imageElement.onload = this.#loadListener
@@ -43,9 +44,8 @@ export class ImageCloakElement extends HTMLElement {
         () => {
           this.classList.add('clear')
         },
-        (parseFloat(
-          getComputedStyle(this).getPropertyValue('--clear-duration') || '0',
-        ) || 0) * 1000,
+        (parseFloat(getComputedStyle(this).getPropertyValue('--clear-duration') || '0') || 0) *
+          1000,
       )
 
       this.dispatchEvent(new Event('load'))

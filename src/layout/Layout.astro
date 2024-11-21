@@ -92,7 +92,7 @@ const { header = true, footer = true, seo } = Astro.props
     grid-template-columns: 100%;
     overflow: hidden;
 
-    --morph-duration: 0.4s;
+    --morph-duration: 0.2s;
     --ease: var(--ease-in-out-sine);
 
     background-color: var(--color-grey-1);
@@ -109,7 +109,7 @@ const { header = true, footer = true, seo } = Astro.props
 
     overflow: hidden auto;
 
-    background-color: var(--color-grey-2);
+    background-color: var(--color-page-background);
 
     .dragging & {
       overflow: hidden;
@@ -136,6 +136,8 @@ const { header = true, footer = true, seo } = Astro.props
     &.new {
       will-change: opacity;
       opacity: 0;
+
+      z-index: 1;
     }
 
     &.in {

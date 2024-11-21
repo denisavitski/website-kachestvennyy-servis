@@ -1,0 +1,118 @@
+---
+import Image from './Image.astro'
+
+export interface Props {
+  class?: string
+  href?: string
+  name?: string
+  price?: string
+  icon?: string
+}
+
+const {
+  class: className,
+  href = '/',
+  name = 'Сантехника и&nbsp;отопление',
+  price = 'от&nbsp;900&nbsp;₽',
+  icon = 'plumbing',
+  ...rest
+} = Astro.props
+---
+
+<a
+  {...rest}
+  {href}
+  class:list={['service-card', className]}
+>
+  <span
+    class="font-h3 font-mob-h3 service-card__name"
+    set:html={name}
+  />
+  <span
+    class="font-p1 font-mob-h3 service-card__price"
+    set:html={price}
+  />
+  <Image
+    class="service-card__icon"
+    src={`/images/icons/${icon}.svg`}
+    lazy
+    contain
+  />
+</a>
+
+<style is:global>
+  .service-card {
+    --padding: 3rem;
+
+    position: relative;
+    z-index: 1;
+
+    width: 37rem;
+    height: 37rem;
+    padding: var(--padding);
+
+    border-radius: var(--border-radius);
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+
+    background-color: var(--color-background);
+
+    &::before {
+      content: '';
+
+      position: absolute;
+
+      top: -7rem;
+      right: -15.6rem;
+
+      z-index: -1;
+
+      width: 36.5rem;
+      height: 36.5rem;
+
+      border-radius: 50%;
+      background-color: var(--color-button);
+      opacity: 0.1;
+
+      @media (max-width: 768px) {
+        top: -10rem;
+        right: -15.2rem;
+        width: 32.6rem;
+        height: 32.6rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      width: 100%;
+      height: 30rem;
+      justify-content: space-between;
+    }
+  }
+
+  .service-card__name {
+    margin-bottom: 2rem;
+  }
+
+  .service-card__price {
+    @media (max-width: 768px) {
+      position: absolute;
+      bottom: var(--padding);
+      right: var(--padding);
+    }
+  }
+
+  .service-card__icon {
+    width: 14.5rem;
+    height: 14.5rem;
+    margin-left: -2rem;
+    margin-bottom: -2rem;
+    margin-top: auto;
+
+    @media (max-width: 768px) {
+      width: 10rem;
+      height: 10rem;
+    }
+  }
+</style>

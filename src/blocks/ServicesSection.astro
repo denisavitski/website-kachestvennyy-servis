@@ -1,0 +1,102 @@
+---
+import ServiceCard, { type Props as ServiceCardProps } from '@elements/ServiceCard.astro'
+export interface Props {
+  heading?: string
+  list?: Array<ServiceCardProps>
+}
+
+const {
+  heading = 'Услуги',
+  list = [
+    {
+      href: '/',
+      name: 'Сантехника и&nbsp;отопление',
+      price: 'от&nbsp;900&nbsp;₽',
+      icon: 'plumbing',
+    },
+    {
+      href: '/',
+      name: 'Плотницкие работы',
+      price: 'от&nbsp;900&nbsp;₽',
+      icon: 'carpentry-services',
+    },
+    {
+      href: '/',
+      name: 'Электрика',
+      price: 'от&nbsp;900&nbsp;₽',
+      icon: 'electrics',
+    },
+    {
+      href: '/',
+      name: 'Домофонные услуги',
+      price: 'от&nbsp;900&nbsp;₽',
+      icon: 'intercom-services',
+    },
+    {
+      href: '/',
+      name: 'Подключение ТВ-антенны',
+      price: 'от&nbsp;900&nbsp;₽',
+      icon: 'connecting-a-tv-antenna',
+    },
+    {
+      href: '/',
+      name: 'Информационные услуги',
+      price: 'от&nbsp;900&nbsp;₽',
+      icon: 'information-services',
+    },
+    {
+      href: '/',
+      name: 'Прочие услуги',
+      price: 'от&nbsp;900&nbsp;₽',
+      icon: 'other-services',
+    },
+    {
+      href: '/',
+      name: 'Платные парковки',
+      price: 'от&nbsp;3&nbsp;000&nbsp;₽',
+      icon: 'paid-parking',
+    },
+  ],
+} = Astro.props
+---
+
+<div class="services-section">
+  <h1
+    class="font-h1 font-mob-h2 services-section__heading"
+    set:html={heading}
+  />
+
+  <div class="services-section__list"
+    >{
+      list.map((item) => {
+        return <ServiceCard {...item} />
+      })
+    }</div
+  >
+</div>
+
+<style is:global>
+  .services-section {
+    padding: var(--section-vertical-padding) var(--screen-horisontal-padding);
+    padding-top: 0;
+  }
+
+  .services-section__heading {
+    margin-bottom: 5rem;
+
+    @media (max-width: 768px) {
+      margin-bottom: 3rem;
+    }
+  }
+
+  .services-section__list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3.7rem 4rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 100%;
+      gap: 3rem;
+    }
+  }
+</style>
