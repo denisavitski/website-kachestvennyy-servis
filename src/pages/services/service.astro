@@ -1,0 +1,27 @@
+---
+import Breadcrumbs from '@blocks/Breadcrumbs.astro'
+import Feedback from '@blocks/Feedback.astro'
+import Price from '@blocks/Price.astro'
+import ServiceIntro from '@blocks/ServiceIntro.astro'
+import Layout from '@layout/Layout.astro'
+---
+
+<Layout
+  seo={{
+    title: 'УК Качественный Сервис: Услуги',
+    description:
+      'Управляющая компания «Качественный сервис» является надёжным партнёром в сфере управления и обслуживания многоквартирных домов.',
+    cover: '/images/seo/home.jpg',
+  }}
+>
+  <Breadcrumbs
+    links={[
+      { name: 'Главная', href: '/' },
+      { name: 'Услуги', href: '/services' },
+      { name: 'Услуга', href: '/services/service' },
+    ]}
+  />
+  <ServiceIntro />
+  <Price />
+  <Feedback />
+</Layout>

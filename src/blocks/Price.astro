@@ -1,0 +1,208 @@
+---
+import Button from '@elements/Button.astro'
+
+export interface Props {
+  heading?: string
+  list?: Array<{ name: string; price: string; id: string }>
+}
+
+const {
+  heading = 'Прайс-лист',
+  list = [
+    { name: 'Замена/установка теплосчетчика', price: '3 500 ₽', id: '1' },
+    {
+      name: 'Замена/установка сантехнической сборки в&nbsp;тех. шкафу',
+      price: 'от 1 750 ₽',
+      id: '1',
+    },
+    { name: 'Замена/установка фильтра тонкой очистки (ХВС, ГВС)', price: '113 500 ₽', id: '1' },
+    { name: 'Замена/установка теплосчетчика', price: '3 500 ₽', id: '1' },
+    { name: 'Замена/установка теплосчетчика', price: '3 500 ₽', id: '1' },
+  ],
+} = Astro.props
+---
+
+<e-price class="price">
+  <h2
+    class="font-h2 font-mob-h2 price__heading"
+    set:html={heading}
+  />
+  <!-- 
+    Добавить aria-hidden на все итемы кроме первых 11
+  -->
+  <ul class="price__list">
+    {
+      [...list, ...list, ...list].map((item, i) => {
+        return (
+          <li
+            class="price__list__item"
+            aria-hidden={i > 10}
+          >
+            <e-popover-button
+              class="font-p1 font-mob-p1 price__list__item__link"
+              target="feedback"
+              data-id={item.id}
+            >
+              <div
+                class="font-p1 font-mob-p1 price__list__item__name"
+                set:html={item.name}
+              />
+
+              <div
+                class="font-p1 font-mob-p1 price__list__item__price"
+                set:html={item.price}
+              />
+              <Button
+                class="price__list__item__button"
+                tag="span"
+              >
+                Связаться
+              </Button>
+            </e-popover-button>
+          </li>
+        )
+      })
+    }
+  </ul>
+
+  <Button
+    class="price__more-button"
+    theme={'outlined'}
+    >Показать больше</Button
+  >
+</e-price>
+
+<style is:global>
+  .price {
+    padding: var(--section-vertical-padding) var(--screen-horisontal-padding);
+
+    display: flex;
+    flex-direction: column;
+  }
+
+  .price__heading {
+    margin-bottom: 5rem;
+
+    @media (max-width: 768px) {
+      margin-bottom: 3rem;
+    }
+  }
+
+  .price__list {
+    display: grid;
+    grid-auto-rows: max-content;
+    gap: 3rem;
+
+    margin-bottom: 5rem;
+
+    @media (max-width: 768px) {
+      margin-bottom: 3rem;
+    }
+  }
+
+  .price__list__item {
+    &[aria-hidden='true'] {
+      display: none;
+    }
+  }
+
+  .price__list__item__link {
+    width: 100%;
+    min-height: 10rem;
+    padding: 1rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .price__list__item:nth-child(odd) & {
+      background-color: var(--color-background);
+      border-radius: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      min-height: 7.4rem;
+      gap: 3rem;
+    }
+  }
+
+  .price__list__item__name {
+    @media (min-width: 769px) {
+      width: 65.5rem;
+      margin-right: 31.7rem;
+    }
+  }
+
+  .price__list__item__price {
+    flex-shrink: 0;
+
+    @media (min-width: 769px) {
+      margin-right: auto;
+    }
+  }
+
+  .price__list__item__button {
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+
+  .price__more-button {
+    margin: 0 auto;
+
+    @media (max-width: 768px) {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  export class PriceElement extends HTMLElement {
+    #moreButtonElement: HTMLElement | null = null
+
+    #itemsPerView = 11
+    #page = 1
+
+    #itemElements: Array<HTMLElement> = []
+
+    protected connectedCallback() {
+      this.#moreButtonElement = document.querySelector('.price__more-button')
+      this.#moreButtonElement?.addEventListener('click', this.#moreListener)
+
+      this.#itemElements = [...this.querySelectorAll<HTMLElement>('.price__list__item')]
+
+      this.#filter()
+    }
+
+    protected disconnectedCallback() {
+      this.#moreButtonElement?.removeEventListener('click', this.#moreListener)
+    }
+
+    #moreListener = () => {
+      this.#page++
+      this.#filter()
+    }
+
+    #filter() {
+      const visibleItems = this.#page * this.#itemsPerView
+
+      this.#itemElements.forEach((element, i) => {
+        element.ariaHidden = i < visibleItems ? 'false' : 'true'
+      })
+
+      if (visibleItems >= this.#itemElements.length) {
+        this.#moreButtonElement?.remove()
+      }
+    }
+  }
+
+  if (!customElements.get('e-price')) {
+    customElements.define('e-price', PriceElement)
+  }
+
+  declare global {
+    interface HTMLElementTagNameMap {
+      'e-price': PriceElement
+    }
+  }
+</script>
