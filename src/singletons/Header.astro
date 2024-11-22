@@ -31,7 +31,7 @@ const {
     },
     {
       name: 'Раскрытие информации',
-      href: '/information',
+      href: '/disclosure',
     },
     {
       name: 'Новости',
@@ -284,7 +284,12 @@ const {
     }
   }
 
-  .header__contact {
+  .header__nav__link {
+    transition: opacity 0.3s;
+
+    &.current {
+      opacity: 0.4;
+    }
   }
 
   .header__contact__title {
@@ -295,9 +300,6 @@ const {
     @media (max-width: 768px) {
       margin-bottom: 1rem;
     }
-  }
-
-  .header__contact__value {
   }
 </style>
 

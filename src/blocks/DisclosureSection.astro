@@ -1,0 +1,111 @@
+---
+import Accordion from '@elements/Accordion.astro'
+import Information, { type Props as InformationProps } from '@elements/Information.astro'
+
+export interface Props {
+  heading?: string
+  information?: Array<Omit<InformationProps, 'class'>>
+}
+
+const {
+  heading = 'Раскрытие информации',
+  information = [
+    {
+      title:
+        'Реквизиты свидетельства о&nbsp;государственной регистрации в&nbsp;качестве юридического лица',
+      list: [
+        {
+          title: 'Полное наименование:',
+          value: 'Общество с ограниченной ответственностью «Качественный сервис»',
+        },
+        {
+          title: 'ИНН:',
+          value: '211093334',
+        },
+        {
+          title: 'ОГРН:',
+          value: '8885001634701',
+        },
+        {
+          title: 'Руководитель организации:',
+          value: 'Куприянов Игорь Олегович',
+        },
+        {
+          title: 'Место нахождения органов управления:',
+          value: 'МО,&nbsp;г. о. Люберцы, д.п. Красково, Егорьевское ш., д.&nbsp;1, корпус 6',
+        },
+        {
+          title: 'Почтовый адрес:',
+          value: 'МО,&nbsp;г. о. Люберцы, д.п. Красково, Егорьевское ш., д.&nbsp;1, корпус 6',
+        },
+        {
+          title: 'Телефон приемной:',
+          value: '7 991 284-38-28',
+        },
+        {
+          title: 'Телефон диспетчерской:',
+          value: '8 800 101-16-49',
+        },
+        {
+          title: 'Официальный сайт в сети Интернет:',
+          value: 'www.kservice_uk.ru',
+        },
+        {
+          title: 'Адрес электронной почты:',
+          value: 'Info@kservice-uk.ru',
+        },
+        {
+          title: 'Сокращенное наименование:',
+          value: 'УК “Качественный сервис”',
+        },
+        {
+          title: 'Дата государственной регистрации:',
+          value: '07.09.2024',
+        },
+        {
+          title: 'КПП:',
+          value: '435010101',
+        },
+      ],
+    },
+  ],
+} = Astro.props
+---
+
+<div class="disclosure">
+  <h1
+    class="font-h1 font-mob-h1 disclosure__heading"
+    set:html={heading}
+  />
+  <Accordion
+    class="disclosure__list"
+    multiple
+  >
+    {
+      [...information, ...information].map((item) => {
+        return <Information {...item} />
+      })
+    }
+  </Accordion>
+</div>
+
+<style is:global>
+  .disclosure {
+    padding: var(--section-vertical-padding) var(--screen-horisontal-padding);
+    padding-top: 0;
+  }
+
+  .disclosure__heading {
+    margin-bottom: 5rem;
+
+    @media (max-width: 768px) {
+      margin-bottom: 3rem;
+    }
+  }
+
+  .disclosure__list {
+    display: grid;
+    grid-auto-rows: max-content;
+    gap: 3rem;
+  }
+</style>

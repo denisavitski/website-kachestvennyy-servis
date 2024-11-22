@@ -55,30 +55,11 @@ const Tag = tag as any
     height: 100%;
 
     display: none;
-    opacity: 1 !important;
+    opacity: 0;
 
     transition: opacity var(--duration);
 
-    &::before {
-      content: '';
-
-      position: absolute;
-      width: 100%;
-      height: 100%;
-
-      z-index: -1;
-
-      background-color: rgba(0, 0, 0, 0.6);
-
-      opacity: 0;
-
-      transition: opacity var(--duration);
-    }
-
-    &.opened::before {
-      transition-duration: var(--duration);
-      opacity: 1;
-    }
+    background-color: rgba(0, 0, 0, 0.6);
   }
 
   .common-modal__inner {
@@ -96,19 +77,6 @@ const Tag = tag as any
     max-height: 100%;
 
     overflow: hidden auto;
-
-    transition: clip-path var(--duration);
-
-    clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0% 100%);
-
-    .common-modal.opened & {
-      clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
-    }
-
-    .common-modal.closing & {
-      transition-duration: calc(var(--duration) / 2);
-      clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
-    }
 
     @media (max-width: 768px) {
       width: 100%;

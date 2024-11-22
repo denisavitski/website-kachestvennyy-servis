@@ -1,0 +1,24 @@
+---
+import Breadcrumbs from '@blocks/Breadcrumbs.astro'
+import DisclosureSection from '@blocks/DisclosureSection.astro'
+import Feedback from '@blocks/Feedback.astro'
+import Layout from '@layout/Layout.astro'
+---
+
+<Layout
+  seo={{
+    title: 'УК Качественный Сервис: Раскрытие информации',
+    description:
+      'Управляющая компания «Качественный сервис» является надёжным партнёром в сфере управления и обслуживания многоквартирных домов.',
+    cover: '/images/seo/home.jpg',
+  }}
+>
+  <Breadcrumbs
+    links={[
+      { name: 'Главная', href: '/' },
+      { name: 'Раскрытие информации', href: '/disclosure' },
+    ]}
+  />
+  <DisclosureSection />
+  <Feedback />
+</Layout>

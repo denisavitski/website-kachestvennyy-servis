@@ -2,20 +2,15 @@ import { Morph } from 'aptechka/morph'
 
 export const morph = new Morph({
   trailingSlash: true,
+  scrollSelector: '#page-scroll',
 })
 
 function updateSize() {
   const clientWidth = document.documentElement.clientWidth
 
-  document.documentElement.style.setProperty(
-    '--inner-height',
-    innerHeight + 'px',
-  )
+  document.documentElement.style.setProperty('--inner-height', innerHeight + 'px')
 
-  document.documentElement.style.setProperty(
-    '--client-width',
-    clientWidth + 'px',
-  )
+  document.documentElement.style.setProperty('--client-width', clientWidth + 'px')
 }
 
 function scrollListener() {

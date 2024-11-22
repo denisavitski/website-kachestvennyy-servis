@@ -58,7 +58,10 @@ const {
     set:html={heading}
   />
 
-  <Accordion class="vacancies__list">
+  <Accordion
+    class="vacancies__list"
+    multiple
+  >
     {
       [...vacancies, ...vacancies, ...vacancies].map((vacancy) => {
         return <Vacancy {...vacancy} />
