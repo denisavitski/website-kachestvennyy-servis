@@ -1,0 +1,140 @@
+---
+import Button from '@elements/Button.astro'
+import Icon from '@elements/Icon.astro'
+import Image, { type ImageDataProps } from '@elements/Image.astro'
+
+export interface Props {
+  heading?: string
+  description?: string
+  button?: { href: string; name: string }
+  image?: ImageDataProps
+}
+
+const {
+  heading = 'Новости',
+  description = 'Подпишитесь на&nbsp;наш&nbsp;Telegram-канал, чтобы&nbsp;всегда быть в&nbsp;курсе последних новостей и&nbsp;обновлений.',
+  button = {
+    href: 'https://google.com',
+    name: 'Подписаться',
+  },
+  image = { src: '/images/illustrations/4.svg' },
+} = Astro.props
+---
+
+<div class="subscribe">
+  <h1
+    class="font-h1 font-mob-h1 subscribe__heading"
+    set:html={heading}
+  />
+
+  <div class="subscribe__content">
+    <div class="subscribe__content__left">
+      <Icon
+        name="logo"
+        class="subscribe__icon"
+      />
+      <p
+        class="font-h3 font-mob-h3 subscribe__description"
+        set:html={description}
+      />
+      <Button
+        class="subscribe__button"
+        href={button.href}
+        theme={'message'}
+        target="_blank"
+        >{button.name}</Button
+      >
+    </div>
+    <Image
+      class="subscribe__image"
+      {...image}
+      lazy
+      lazyBackground
+      contain
+    />
+  </div>
+</div>
+
+<style is:global>
+  .subscribe {
+    padding: var(--section-vertical-padding) var(--screen-horisontal-padding);
+    padding-top: 0;
+  }
+
+  .subscribe__heading {
+    margin-bottom: 5rem;
+
+    @media (max-width: 768px) {
+      margin-bottom: 3rem;
+    }
+  }
+
+  .subscribe__content {
+    width: 100%;
+    min-height: 52.2rem;
+    padding: 5rem;
+
+    display: flex;
+    justify-content: space-between;
+
+    background-color: var(--color-background);
+    border-radius: var(--border-radius);
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      min-height: unset;
+      width: calc(100% + var(--screen-horisontal-padding) * 2);
+      margin-left: calc(var(--screen-horisontal-padding) * -1);
+      padding: var(--screen-horisontal-padding);
+    }
+  }
+
+  .subscribe__content__left {
+    @media (min-width: 769px) {
+      width: 65.7rem;
+    }
+
+    @media (max-width: 768px) {
+      display: contents;
+    }
+  }
+
+  .subscribe__icon {
+    order: 1;
+
+    width: 4rem;
+    height: 4rem;
+    margin-bottom: 7rem;
+
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+
+  .subscribe__description {
+    order: 2;
+
+    margin-bottom: 5rem;
+
+    @media (max-width: 768px) {
+      margin-bottom: 3rem;
+    }
+  }
+
+  .subscribe__button {
+    order: 4;
+  }
+
+  .subscribe__image {
+    order: 3;
+    flex-shrink: 0;
+    width: 59.2rem;
+    height: 42.2rem;
+
+    @media (max-width: 768px) {
+      width: 100%;
+      height: 23.9rem;
+      margin-bottom: 3rem;
+    }
+  }
+</style>

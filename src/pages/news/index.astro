@@ -1,0 +1,24 @@
+---
+import Breadcrumbs from '@blocks/Breadcrumbs.astro'
+import Subscribe from '@blocks/Subscribe.astro'
+import AllNews from '@blocks/AllNews.astro'
+import Layout from '@layout/Layout.astro'
+---
+
+<Layout
+  seo={{
+    title: 'УК Качественный Сервис: Новости',
+    description:
+      'Управляющая компания «Качественный сервис» является надёжным партнёром в сфере управления и обслуживания многоквартирных домов.',
+    cover: '/images/seo/home.jpg',
+  }}
+>
+  <Breadcrumbs
+    links={[
+      { name: 'Главная', href: '/' },
+      { name: 'Новости', href: '/news' },
+    ]}
+  />
+  <Subscribe />
+  <AllNews />
+</Layout>

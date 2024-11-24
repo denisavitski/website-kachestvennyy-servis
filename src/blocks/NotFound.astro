@@ -1,0 +1,105 @@
+---
+import Button from '@elements/Button.astro'
+import Image from '@elements/Image.astro'
+
+export interface Props {
+  heading?: string
+  description?: string
+}
+
+const {
+  heading = 'Упс, кажется, такой страницы не&nbsp;существует.',
+  description = 'Пожалуйста, вернитесь на&nbsp;главную страницу или&nbsp;воспользуйтесь меню для&nbsp;перехода к&nbsp;другим разделам нашего сайта.',
+} = Astro.props
+---
+
+<!-- BLOCK -->
+<div class="not-found">
+  <div class="not-found__content">
+    <h1
+      class="font-h1 font-mob-h1 not-found__heading"
+      set:html={heading}
+    />
+    <p
+      class="font-p1 font-mob-p3 not-found__description"
+      set:html={description}
+    />
+    <Button
+      class="not-found__back"
+      href="/"
+      >Вернуться на главную</Button
+    >
+  </div>
+  <Image
+    class="not-found__image"
+    src="images/illustrations/7.svg"
+    lazy
+    contain
+  />
+</div>
+
+<style is:global>
+  .not-found {
+    padding: var(--section-vertical-padding) var(--screen-horisontal-padding);
+
+    display: flex;
+    justify-content: space-between;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+
+  .not-found__content {
+    @media (min-width: 769px) {
+      max-width: 81rem;
+      padding-top: 9.5rem;
+    }
+
+    @media (max-width: 768px) {
+      display: contents;
+    }
+  }
+
+  .not-found__heading {
+    order: 1;
+    margin-bottom: 5rem;
+
+    @media (max-width: 768px) {
+      margin-bottom: 3rem;
+      text-align: center;
+    }
+  }
+
+  .not-found__description {
+    order: 2;
+    margin-bottom: 4.7rem;
+
+    @media (max-width: 768px) {
+      margin-bottom: 3rem;
+      text-align: center;
+    }
+  }
+
+  .not-found__back {
+    order: 4;
+
+    @media (max-width: 768px) {
+      width: 100%;
+    }
+  }
+
+  .not-found__image {
+    order: 3;
+    width: 61rem;
+    height: 61rem;
+
+    @media (max-width: 768px) {
+      width: 27.7rem;
+      height: 27.7rem;
+
+      margin-bottom: 3rem;
+    }
+  }
+</style>

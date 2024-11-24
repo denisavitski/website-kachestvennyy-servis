@@ -1,0 +1,67 @@
+---
+import Button from './Button.astro'
+
+export interface Props {
+  class?: string
+  tag?: string
+  button?: string
+  itemsPerPage?: number | string
+}
+
+const {
+  class: className,
+  tag = 'e-portional',
+  button = 'Показать больше',
+  itemsPerPage = 10,
+  ...rest
+} = Astro.props
+
+const Tag = tag as any
+---
+
+<Tag
+  {...rest}
+  class:list={['portional', className]}
+  items-per-page={itemsPerPage}
+>
+  <!-- 
+    Добавить aria-hidden на все элементы кроме первой порции
+  -->
+  <div class="portional__content">
+    <slot />
+  </div>
+
+  <Button
+    class="portional__more-button"
+    theme={'outlined'}
+    data-more-button
+    >Показать больше</Button
+  >
+</Tag>
+
+<style is:global>
+  .portional {
+    display: flex;
+    flex-direction: column;
+
+    [aria-hidden='true'] {
+      display: none;
+    }
+  }
+
+  .portional__content {
+    margin-bottom: 5rem;
+
+    @media (max-width: 768px) {
+      margin-bottom: 3rem;
+    }
+  }
+
+  .portional__more-button {
+    margin: 0 auto;
+
+    @media (max-width: 768px) {
+      width: 100%;
+    }
+  }
+</style>

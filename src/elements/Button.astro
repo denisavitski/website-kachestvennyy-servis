@@ -19,9 +19,12 @@ const {
   tag = 'button',
   theme = 'default',
   modal,
+  target,
   href,
   name,
   checked,
+  value,
+  title,
   ...rest
 } = Astro.props
 
@@ -38,7 +41,7 @@ if (modal) {
 
 <Tag
   {...rest}
-  target={modal}
+  target={modal || target}
   href={href}
   class:list={['primary-button', className]}
   data-theme={theme}
@@ -50,6 +53,8 @@ if (modal) {
         type="radio"
         {checked}
         {name}
+        {value}
+        {title}
       />
     )
   }
@@ -171,16 +176,16 @@ if (modal) {
     }
 
     @media (hover: hover) {
-      .primary-button[data-theme='default']:not(:active):not([disabled]):not(.disabled):hover &,
-      .primary-button[data-theme='message']:not(:active):not([disabled]):not(.disabled):hover & {
+      .primary-button[data-theme='default']:not([disabled]):not(.disabled):hover &,
+      .primary-button[data-theme='message']:not([disabled]):not(.disabled):hover & {
         background-color: var(--color-primary);
       }
 
-      .primary-button[data-theme='outlined']:not(:active):not([disabled]):not(.disabled):hover & {
+      .primary-button[data-theme='outlined']:not([disabled]):not(.disabled):hover & {
         background-color: var(--color-background);
       }
 
-      .primary-button[data-theme='toggle']:not(:active):not([disabled]):not(.disabled):hover & {
+      .primary-button[data-theme='toggle']:not([disabled]):not(.disabled):hover & {
         background-color: var(--color-button);
         color: var(--color-surface);
       }

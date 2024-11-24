@@ -34,7 +34,23 @@ const {
 
 <!-- 
   Если указан handler отличный от /test, данные из формы отправятся по нему, 
-  и по успешному завершению откроется модалка. 
+  и по успешному завершению откроется модалка.
+
+
+  В handler также можно указать значение fetchit, 
+  в таком случае отправка формы не будет обрабатываться, 
+  но буду слушаться события fetchit:success и fetchit:error 
+  которые будут открывать ответ.
+
+
+  Если форма находится внутри модалки и туда нужно 
+  передать значения в зависимости от нажатой кнопки,
+  то это можно сделать через специальные аитрибуты,
+  которые начинаются c data-input.
+
+  Например: <e-popover-button data-input-page="https://site.com/about" data-input-page-name="о нас">
+  при нажатии на такую кнопку в форме создадутся инпуты 
+  с названием page и pageName и соответствующими значениями
 -->
 <e-form
   {...rest}
@@ -46,6 +62,7 @@ const {
   {reusable}
 >
   <form>
+    <div class="form-tmp-inputs"></div>
     <slot />
   </form>
 </e-form>
@@ -61,23 +78,30 @@ const {
 </style>
 
 <script>
-  import { dispatchEvent } from 'aptechka/utils'
+  import { PopoverElement, type PopoverEvents } from 'aptechka/popover'
+  import { dispatchEvent, findParentElement } from 'aptechka/utils'
 
   export class FormElement extends HTMLElement {
+    #popoverElement: PopoverElement | null = null
     #formElement: HTMLFormElement | null = null
     #buttonElement: HTMLButtonElement | null = null
     #inputElements: Array<HTMLInputElement> | null = null
+    #tmpInputsContainerElement: HTMLElement | null = null
     #sended = false
     #handler = '/test'
     #isReusable = false
 
     protected connectedCallback() {
+      this.#popoverElement = findParentElement(this, PopoverElement)
+
       this.#formElement = this.querySelector('form')
 
       this.#handler = this.getAttribute('handler') || '/test'
       this.#isReusable = this.hasAttribute('reusable')
 
       if (this.#formElement) {
+        this.#tmpInputsContainerElement = this.querySelector<HTMLElement>('.form-tmp-inputs')
+
         this.#formElement.addEventListener('submit', this.#submitListener)
 
         this.#inputElements = [...this.#formElement.querySelectorAll('input')]
@@ -95,6 +119,9 @@ const {
           document.addEventListener('fetchit:error', this.#fetchitErrorListener as EventListener)
         }
       }
+
+      this.#popoverElement?.addEventListener('popoverOpened', this.#popoverOpenedListener)
+      this.#popoverElement?.addEventListener('popoverClosed', this.#popoverClosedListener)
     }
 
     protected disconnectedCallback() {
@@ -106,6 +133,9 @@ const {
 
       document.removeEventListener('fetchit:success', this.#fetchitSuccesListener as EventListener)
       document.removeEventListener('fetchit:error', this.#fetchitErrorListener as EventListener)
+
+      this.#popoverElement?.removeEventListener('popoverOpened', this.#popoverOpenedListener)
+      this.#popoverElement?.removeEventListener('popoverClosed', this.#popoverClosedListener)
     }
 
     #submitListener = async (e: SubmitEvent) => {
@@ -214,6 +244,34 @@ const {
       alert(errorMessage)
 
       this.#sended = false
+    }
+
+    #popoverOpenedListener = (e: PopoverEvents['popoverOpened']) => {
+      const trigger = e.detail.trigger
+
+      if (this.#tmpInputsContainerElement && trigger instanceof HTMLElement) {
+        for (const key in trigger.dataset) {
+          const value = trigger.dataset[key]
+
+          if (value && key.toLowerCase().includes('input')) {
+            const inputElement = document.createElement('input')
+            const keyWithoutInput = key.replace('input', '').replace('Input', '')
+
+            if (keyWithoutInput) {
+              inputElement.type = 'hidden'
+              inputElement.name = keyWithoutInput[0]!.toLowerCase() + keyWithoutInput.slice(1)
+              inputElement.value = value
+              this.#tmpInputsContainerElement.appendChild(inputElement)
+            }
+          }
+        }
+      }
+    }
+
+    #popoverClosedListener = () => {
+      if (this.#tmpInputsContainerElement) {
+        this.#tmpInputsContainerElement.innerHTML = ''
+      }
     }
   }
 

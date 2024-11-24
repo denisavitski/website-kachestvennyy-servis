@@ -11,7 +11,8 @@ import '@globals/main.css'
 
 import '@lib/SegmentElement'
 import '@lib/ImageCloak'
-import '@lib/SwipePopoverElement'
+import '@lib/InputGroupElement'
+import '@lib/PortionalElement'
 
 import './dev'
 import './page'

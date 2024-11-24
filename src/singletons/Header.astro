@@ -285,10 +285,16 @@ const {
   }
 
   .header__nav__link {
-    transition: opacity 0.3s;
+    transition: opacity var(--duration-button);
 
     &.current {
       opacity: 0.4;
+    }
+
+    @media (hover: hover) {
+      &:hover {
+        opacity: 0.4;
+      }
     }
   }
 
@@ -299,6 +305,16 @@ const {
 
     @media (max-width: 768px) {
       margin-bottom: 1rem;
+    }
+  }
+
+  .header__contact__value {
+    transition: opacity var(--duration-button);
+
+    @media (hover: hover) {
+      &:hover {
+        opacity: 0.4;
+      }
     }
   }
 </style>

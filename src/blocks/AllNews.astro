@@ -1,0 +1,79 @@
+---
+import Portional from '@elements/Portional.astro'
+import TextCard, { type Props as TextCardProps } from '@elements/TextCard.astro'
+export interface Props {
+  cards?: Array<Omit<TextCardProps, 'class'>>
+}
+
+const {
+  cards = [
+    {
+      title:
+        'Присоединяйтесь к&nbsp;команде УК&nbsp;«Качественный сервис» в&nbsp;Красково&nbsp;— мы&nbsp;ищем талантливых специалистов!',
+      description:
+        'Открыты вакансии: слесарь-сантехник, электрик, тракторист и&nbsp;разнорабочие. Заработная плата от&nbsp;40 000&nbsp;до&nbsp;90 000&nbsp;рублей&nbsp;— звоните Геннадию по&nbsp;телефону 7&nbsp;968&nbsp;869-28-58!',
+      date: '9&nbsp;ноября 2024',
+      icon: 'sun',
+      href: '/news/article',
+    },
+    {
+      title:
+        'Присоединяйтесь к&nbsp;встрече с&nbsp;управляющей организацией «Качественный Сервис» для&nbsp;обсуждения будущего Красково!',
+      description: '9&nbsp;октября в&nbsp;19:00&nbsp;— обсудим будущее нашего посёлка!',
+      date: '8&nbsp;ноября 2024',
+      icon: 'sun',
+      href: '/news/article',
+    },
+    {
+      title: 'Запуск отопительного сезона 2024–2025&nbsp;в&nbsp;Люберцах завершён!',
+      description:
+        'Если&nbsp;у&nbsp;вас&nbsp;нет&nbsp;отопления, сообщите по&nbsp;телефону 8&nbsp;800&nbsp;101-16-49&nbsp;или&nbsp;в&nbsp;личные сообщения группы ВК&nbsp;и&nbsp;Telegram.',
+      date: '7&nbsp;ноября 2024',
+      icon: 'sun',
+      href: '/news/article',
+    },
+  ],
+} = Astro.props
+---
+
+<Portional
+  class="all-news"
+  itemsPerPage={6}
+>
+  <div class="all-news__list">
+    {
+      [...cards, ...cards, ...cards, ...cards, cards[0]].map((card, i) => {
+        return (
+          <TextCard
+            {...card}
+            data-item
+            titleFont="font-h3 font-mob-p1"
+            aria-hidden={i > 5}
+          />
+        )
+      })
+    }
+  </div>
+</Portional>
+
+<style is:global>
+  .all-news {
+    padding: var(--section-vertical-padding) var(--screen-horisontal-padding);
+  }
+
+  .all-news__list {
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3rem 2.8rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 100%;
+
+      .text-card__description {
+        display: none;
+      }
+    }
+  }
+</style>

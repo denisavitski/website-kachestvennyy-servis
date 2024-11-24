@@ -44,8 +44,10 @@ const { class: className, ...rest } = Astro.props
     padding: var(--padding, 5rem);
 
     user-select: none;
+    cursor: pointer;
 
     @media (max-width: 768px) {
+      gap: 1rem;
       padding: var(--padding, 2rem);
     }
   }

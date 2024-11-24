@@ -65,7 +65,7 @@ const {
     },
   ],
   bottom = {
-    policy: { value: 'Политика обработки персональных данных', href: '/robots.txt' },
+    policy: { value: 'Политика обработки персональных данных', href: '/policy' },
     studio: { value: 'Разработка сайта Студия ЯР', href: 'https://google.com' },
   },
 } = Astro.props
@@ -141,8 +141,6 @@ const {
     <a
       class="font-p2 font-mob-p3 footer__policy"
       href={bottom.policy.href}
-      data-morph-skip
-      target="_blank"
       set:html={bottom.policy.value}
     />
     <a
@@ -195,6 +193,14 @@ const {
   }
 
   .footer__nav__link {
+    transition: opacity var(--duration-button);
+
+    @media (hover: hover) {
+      &:hover {
+        opacity: 0.4;
+      }
+    }
+
     @media (min-width: 769px) {
       width: max-content;
     }
@@ -266,6 +272,13 @@ const {
   }
 
   .footer__contacts__item__value {
+    transition: opacity var(--duration-button);
+
+    @media (hover: hover) {
+      .footer__contacts__item:hover & {
+        opacity: 0.4;
+      }
+    }
   }
 
   .footer__contacts__item__title {
@@ -291,8 +304,23 @@ const {
   .footer__policy {
     text-decoration: underline;
     text-decoration-skip-ink: none;
+
+    transition: opacity var(--duration-button);
+
+    @media (hover: hover) {
+      &:hover {
+        opacity: 0.6;
+      }
+    }
   }
 
   .footer__studio {
+    transition: opacity var(--duration-button);
+
+    @media (hover: hover) {
+      &:hover {
+        opacity: 0.6;
+      }
+    }
   }
 </style>

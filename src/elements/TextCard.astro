@@ -4,22 +4,22 @@ import Button from './Button.astro'
 import Icon from './Icon.astro'
 
 export interface Props {
-  class?: string
-  title?: string
-  titleTag?: string
-  description?: string
-  value?: string
+  class?: string | undefined
+  title?: string | undefined
+  titleTag?: string | undefined
+  description?: string | undefined
+  value?: string | undefined
   button?: {
-    text: string
-    modal?: string
-    href?: string
+    text: string | undefined
+    modal?: string | undefined
+    href?: string | undefined
   }
-  highlite?: boolean
-  icon?: 'logo' | 'sun'
-  iconPosition?: 'bottom' | 'top'
-  date?: string
-  href?: string
-  titleFont?: string
+  highlite?: boolean | undefined
+  icon?: 'logo' | 'sun' | undefined
+  iconPosition?: 'bottom' | 'top' | undefined
+  date?: string | undefined
+  href?: string | undefined
+  titleFont?: string | undefined
 }
 
 const {
@@ -79,7 +79,7 @@ const TitleTag = titleTag as any
   {
     value && (
       <div
-        class="font-p2 font-mob-p3 text-card__value"
+        class="font-p1 font-mob-p3 text-card__value"
         set:html={value}
       />
     )
@@ -98,7 +98,7 @@ const TitleTag = titleTag as any
     button && (
       <Button
         class="text-card__button"
-        {...omit(button, ['text'])}
+        {...(omit(button, ['text']) as any)}
       >
         {button.text}
       </Button>

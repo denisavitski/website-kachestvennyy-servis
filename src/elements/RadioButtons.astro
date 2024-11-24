@@ -1,0 +1,232 @@
+---
+import Button from './Button.astro'
+import Icon from './Icon.astro'
+
+export interface Props {
+  class?: string
+  name?: string
+  inputs?: Array<{ title: string; value: string }>
+}
+
+const {
+  class: className,
+  name = 'radio-buttons',
+  inputs = [
+    { title: 'Все улицы', value: '' },
+    { title: 'ул. 2-ая Заводская', value: 'ул. 2-ая Заводская' },
+    { title: 'ул. Карла Маркса', value: 'ул. Карла Маркса' },
+    { title: 'ул. КСЗ', value: 'ул. КСЗ' },
+    { title: 'ул. Федянина', value: 'ул. Федянина' },
+    { title: 'ул. Некрасова', value: 'ул. Некрасова' },
+    { title: 'ул. Озерная', value: 'ул. Озерная' },
+    { title: 'ул. Островского', value: 'ул. Островского' },
+    { title: 'ул. Лорха', value: 'ул. Лорха' },
+  ],
+  ...rest
+} = Astro.props
+---
+
+<radio-buttons
+  {...rest}
+  class:list={['radio-buttons', className]}
+>
+  <div class="radio-buttons__select">
+    <e-popover-button
+      class="font-mob-p1 radio-buttons__open-button"
+      target={name}
+    >
+      <div
+        class="radio-buttons__open-button__value"
+        set:html={inputs[0]?.title}
+      />
+      <Icon
+        class="radio-buttons__open-button__icon"
+        name="tailless-arrow"
+      />
+    </e-popover-button>
+    <e-popover
+      class="radio-buttons__popover"
+      id={name}
+    >
+      <input-group class="radio-buttons__group">
+        {
+          inputs.map((input, i) => {
+            return (
+              <Button
+                tag="label"
+                theme={'toggle'}
+                class="radio-buttons__button"
+                name={name}
+                title={input.title}
+                value={input.value}
+                checked={i === 0}
+              >
+                {input.title}
+              </Button>
+            )
+          })
+        }
+      </input-group>
+    </e-popover>
+  </div>
+</radio-buttons>
+
+<style is:global>
+  .radio-buttons {
+    position: relative;
+    z-index: 2;
+    display: block;
+  }
+
+  .radio-buttons__select {
+    position: relative;
+  }
+
+  .radio-buttons__open-button {
+    --type: toggle;
+
+    @media (min-width: 769px) {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      font-size: 2rem;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2rem;
+
+      border-radius: 6rem;
+      background-color: var(--color-button);
+
+      &.opened {
+        border-radius: 2rem 2rem 0rem 0rem;
+      }
+    }
+  }
+
+  .radio-buttons__open-button__value {
+    color: var(--color-surface);
+  }
+
+  .radio-buttons__open-button__icon {
+    display: block;
+
+    width: 1.6rem;
+    height: 1.6rem;
+
+    fill: var(--color-surface);
+
+    .radio-buttons__open-button.opened & {
+      transform: scaleY(-1);
+    }
+  }
+
+  .radio-buttons__popover {
+    @media (min-width: 769px) {
+      opacity: 1 !important;
+      display: block !important;
+    }
+
+    @media (max-width: 768px) {
+      position: absolute;
+      left: 0;
+      top: 100%;
+
+      width: 100%;
+    }
+  }
+
+  .radio-buttons__group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3rem 4rem;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      flex-wrap: nowrap;
+      padding: 2rem;
+
+      border: 0.15rem solid var(--color-button);
+      border-bottom-left-radius: 2rem;
+      border-bottom-right-radius: 2rem;
+
+      background-color: var(--color-surface);
+    }
+  }
+
+  .radio-buttons .radio-buttons__button {
+    @media (max-width: 768px) {
+      height: max-content;
+      border-radius: unset;
+      display: flex;
+      flex-direction: row-reverse;
+
+      .primary-button__inner {
+        background-color: unset !important;
+        color: unset !important;
+        border: unset !important;
+        border-radius: unset !important;
+        justify-content: flex-start !important;
+        padding: 0 !important;
+      }
+
+      .primary-button__input {
+        position: relative !important;
+        top: unset !important;
+        left: unset !important;
+        width: 2.4rem !important;
+        height: 2.4rem !important;
+        opacity: unset !important;
+        transform: unset !important;
+        pointer-events: unset !important;
+        accent-color: var(--color-button);
+      }
+    }
+  }
+</style>
+
+<script>
+  import type { InputGroupElement } from '@lib/InputGroupElement'
+  import type { PopoverElement } from 'aptechka/popover'
+
+  export class RadioButtonsElement extends HTMLElement {
+    #inputGroupElement: InputGroupElement | null = null
+    #openButtonValueElement: HTMLElement | null = null
+    #popoverElement: PopoverElement | null = null
+
+    protected connectedCallback() {
+      this.#inputGroupElement = this.querySelector('.radio-buttons__group')
+      this.#inputGroupElement?.addEventListener('inputGroupValueChange', this.#inputListener)
+
+      this.#openButtonValueElement = this.querySelector('.radio-buttons__open-button__value')
+
+      this.#popoverElement = this.querySelector('.radio-buttons__popover')
+    }
+
+    protected disconnectedCallback() {
+      this.#inputGroupElement?.removeEventListener('inputGroupValueChange', this.#inputListener)
+    }
+
+    #inputListener = () => {
+      const title = this.#inputGroupElement!.input?.title
+
+      if (title && this.#openButtonValueElement) {
+        this.#openButtonValueElement.textContent = title
+
+        this.#popoverElement?.close()
+      }
+    }
+  }
+
+  if (!customElements.get('radio-buttons')) {
+    customElements.define('radio-buttons', RadioButtonsElement)
+  }
+
+  declare global {
+    interface HTMLElementTagNameMap {
+      'radio-buttons': RadioButtonsElement
+    }
+  }
+</script>

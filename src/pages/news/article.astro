@@ -1,0 +1,23 @@
+---
+import Breadcrumbs from '@blocks/Breadcrumbs.astro'
+import ArticleSection from '@blocks/ArticleSection.astro'
+import Layout from '@layout/Layout.astro'
+---
+
+<Layout
+  seo={{
+    title: 'УК Качественный Сервис: Новости',
+    description:
+      'Управляющая компания «Качественный сервис» является надёжным партнёром в сфере управления и обслуживания многоквартирных домов.',
+    cover: '/images/seo/home.jpg',
+  }}
+>
+  <Breadcrumbs
+    links={[
+      { name: 'Главная', href: '/' },
+      { name: 'Новости', href: '/news' },
+      { name: 'Новость', href: '/news/article' },
+    ]}
+  />
+  <ArticleSection />
+</Layout>

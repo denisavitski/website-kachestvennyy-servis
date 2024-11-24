@@ -1,0 +1,149 @@
+---
+import { tryCreateHrefFromContact } from '@utils/href'
+import Image, { type ImageDataProps } from './Image.astro'
+import TextCard from './TextCard.astro'
+
+export interface Props {
+  class?: string
+  image?: ImageDataProps
+  title?: string
+  description?: string
+  items?: Array<{ title: string; value: string }>
+}
+
+const {
+  class: className,
+  image = { src: '/images/icons/communication-office.svg' },
+  title = 'Офис',
+  description,
+  items = [
+    { title: 'Телефон', value: '7 991 284-38-28' },
+    { title: 'Email', value: 'Info@kservice-uk.ru' },
+  ],
+  ...rest
+} = Astro.props
+---
+
+<TextCard
+  {...rest}
+  class:list={['contact', className]}
+  title={title}
+  description={description}
+  titleFont="font-h2 font-mob-h2"
+>
+  <Image
+    class="contact__image"
+    {...image}
+    lazy
+    contain
+  />
+
+  <ul class="contact__list">
+    {
+      items.map((item) => {
+        const href = tryCreateHrefFromContact(item.value)
+
+        return (
+          <li class="font-p1 font-mob-p2 contact__item">
+            <div
+              class="contact__item__title"
+              set:html={item.title}
+            />
+            <a
+              class="contact__item__value"
+              href={href.href}
+              set:html={item.value}
+            />
+          </li>
+        )
+      })
+    }
+  </ul>
+</TextCard>
+
+<style is:global>
+  .contact {
+    position: relative;
+    min-height: 35.8rem;
+
+    .text-card__title {
+      max-width: 45rem;
+    }
+
+    @media (max-width: 768px) {
+      min-height: 17.5rem;
+
+      .text-card__title {
+        max-width: 24.9rem;
+      }
+
+      .text-card__description {
+        display: none;
+      }
+    }
+  }
+
+  .contact__image {
+    position: absolute;
+    top: 50%;
+    right: 5rem;
+
+    width: 24.1rem;
+    height: 24.1rem;
+
+    transform: translateY(-50%);
+
+    @media (max-width: 768px) {
+      top: 3.7rem;
+      right: 2rem;
+
+      width: 4rem;
+      height: 4rem;
+
+      transform: unset;
+    }
+  }
+
+  .contact__list {
+    display: grid;
+    grid-auto-rows: max-content;
+    gap: 2rem;
+
+    margin-top: auto;
+
+    @media (max-width: 768px) {
+      gap: 1.5rem;
+    }
+  }
+
+  .contact__item {
+    display: flex;
+    gap: 5rem;
+
+    @media (max-width: 768px) {
+      gap: 0rem;
+    }
+  }
+
+  .contact__item__title {
+    flex-shrink: 0;
+    width: 15.5rem;
+
+    @media (max-width: 768px) {
+      width: 12.6rem;
+    }
+  }
+
+  .contact__item__value {
+    color: var(--color-button);
+    text-decoration: underline;
+
+    transition: opacity var(--duration-button);
+
+    @media (hover: hover) {
+      .contact__item:hover & {
+        opacity: 0.6;
+      }
+    }
+  }
+</style>

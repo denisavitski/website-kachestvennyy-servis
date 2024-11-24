@@ -84,6 +84,17 @@ const {
       }
     }
 
+    @media (hover: hover) {
+      &::before {
+        transition: transform var(--duration-button);
+        transform-origin: top right;
+      }
+
+      &:hover::before {
+        transform: scale(1.05);
+      }
+    }
+
     @media (max-width: 768px) {
       width: 100%;
       height: 30rem;
