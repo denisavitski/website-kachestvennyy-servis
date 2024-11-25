@@ -1,4 +1,9 @@
+import { dispatchEvent } from 'aptechka/utils'
 import type { InputGroupElement } from './InputGroupElement'
+
+export interface PortionalEvents {
+  portionalItemsChange?: CustomEvent
+}
 
 export class PortionalElement extends HTMLElement {
   #inputGroupElement: InputGroupElement | null = null
@@ -8,6 +13,15 @@ export class PortionalElement extends HTMLElement {
   #page = 1
 
   #itemElements: Array<HTMLElement> = []
+  #visibleItemElements: Array<HTMLElement> = []
+
+  public get visibleItemElements() {
+    return this.#visibleItemElements
+  }
+
+  public get inputGroupElement() {
+    return this.#inputGroupElement
+  }
 
   protected connectedCallback() {
     this.#itemsPerPage = parseInt(this.getAttribute('items-per-page') || '10')
@@ -23,11 +37,11 @@ export class PortionalElement extends HTMLElement {
 
     this.#itemElements = [...this.querySelectorAll<HTMLElement>('[data-item]')]
 
-    const notHiddenElements = this.#itemElements.filter(
+    this.#visibleItemElements = this.#itemElements.filter(
       (el) => el.getAttribute('aria-hidden') !== 'true',
     )
 
-    this.#page = Math.ceil(notHiddenElements.length / this.#itemsPerPage) || 1
+    this.#page = Math.ceil(this.#visibleItemElements.length / this.#itemsPerPage) || 1
 
     if (this.#inputGroupElement) {
       customElements.whenDefined('input-group').then(() => {
@@ -52,14 +66,14 @@ export class PortionalElement extends HTMLElement {
   }
 
   #filter() {
-    const visibleItems = this.#page * this.#itemsPerPage
+    const pagesItemsLength = this.#page * this.#itemsPerPage
 
-    const filteredItemElemenets = this.#itemElements.filter((element, i) => {
+    this.#visibleItemElements = this.#itemElements.filter((element, i) => {
       element.ariaHidden = 'false'
 
       let errors = 0
 
-      if (i >= visibleItems) {
+      if (i >= pagesItemsLength) {
         errors++
       }
 
@@ -83,15 +97,17 @@ export class PortionalElement extends HTMLElement {
 
     if (this.#moreButtonElement) {
       if (
-        !filteredItemElemenets.length ||
-        filteredItemElemenets.length === this.#itemElements.length ||
-        visibleItems > filteredItemElemenets.length
+        !this.#visibleItemElements.length ||
+        this.#visibleItemElements.length === this.#itemElements.length ||
+        pagesItemsLength > this.#visibleItemElements.length
       ) {
         this.#moreButtonElement.ariaHidden = 'true'
       } else {
         this.#moreButtonElement.ariaHidden = 'false'
       }
     }
+
+    dispatchEvent(this, 'portionalItemsChange', { custom: true })
 
     window.dispatchEvent(new Event('resize'))
   }
@@ -110,4 +126,6 @@ declare global {
   interface HTMLElementTagNameMap {
     'e-portional': PortionalElement
   }
+
+  interface HTMLElementEventMap extends PortionalEvents {}
 }

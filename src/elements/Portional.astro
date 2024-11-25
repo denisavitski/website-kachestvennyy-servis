@@ -19,14 +19,14 @@ const {
 const Tag = tag as any
 ---
 
+<!-- 
+    Добавить aria-hidden на все data-item элементы кроме первой порции
+  -->
 <Tag
   {...rest}
   class:list={['portional', className]}
   items-per-page={itemsPerPage}
 >
-  <!-- 
-    Добавить aria-hidden на все элементы кроме первой порции
-  -->
   <div class="portional__content">
     <slot />
   </div>

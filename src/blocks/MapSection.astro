@@ -1,0 +1,391 @@
+---
+import Portional from '@elements/Portional.astro'
+import RadioButtons from '@elements/RadioButtons.astro'
+import TextCard, { type Props as TextCardProps } from '@elements/TextCard.astro'
+import { omit } from 'aptechka/utils'
+
+export interface MapHouse extends Pick<TextCardProps, 'title' | 'value'> {
+  streetId: string
+  lat: number
+  long: number
+}
+
+export interface MapStreet {
+  id: string
+  name: string
+  houses: Array<MapHouse>
+}
+
+export interface Props {
+  heading?: string
+  cards?: Array<MapHouse>
+}
+
+const {
+  heading = 'Дома в управлении',
+  cards = [
+    // Улица 1
+    {
+      title: 'Дом 1',
+      value: 'Улица 1, Дом 1',
+      streetId: 'Улица 1',
+      lat: 55.831903,
+      long: 37.411961,
+    },
+    {
+      title: 'Дом 2',
+      value: 'Улица 1, Дом 2',
+      streetId: 'Улица 1',
+      lat: 55.763338,
+      long: 37.565466,
+    },
+    {
+      title: 'Дом 3',
+      value: 'Улица 1, Дом 3',
+      streetId: 'Улица 1',
+      lat: 55.744522,
+      long: 37.616378,
+    },
+    // Улица 2
+    {
+      title: 'Дом 1',
+      value: 'Улица 2, Дом 1',
+      streetId: 'Улица 2',
+      lat: 55.780898,
+      long: 37.642889,
+    },
+    {
+      title: 'Дом 2',
+      value: 'Улица 2, Дом 2',
+      streetId: 'Улица 2',
+      lat: 55.793559,
+      long: 37.435983,
+    },
+    {
+      title: 'Дом 3',
+      value: 'Улица 2, Дом 3',
+      streetId: 'Улица 2',
+      lat: 55.800584,
+      long: 37.675638,
+    },
+    // Улица 3
+    {
+      title: 'Дом 1',
+      value: 'Улица 3, Дом 1',
+      streetId: 'Улица 3',
+      lat: 55.716733,
+      long: 37.589988,
+    },
+    {
+      title: 'Дом 2',
+      value: 'Улица 3, Дом 2',
+      streetId: 'Улица 3',
+      lat: 55.775724,
+      long: 37.56084,
+    },
+    {
+      title: 'Дом 3',
+      value: 'Улица 3, Дом 3',
+      streetId: 'Улица 3',
+      lat: 55.822144,
+      long: 37.433781,
+    },
+  ],
+} = Astro.props
+
+const streets: Array<MapStreet> = [{ name: 'Все улицы', id: '', houses: [] }]
+
+cards.forEach((card) => {
+  let street = streets.find((street) => street.id === card.streetId)
+
+  if (!street) {
+    street = { name: card.streetId, id: card.streetId, houses: [card] }
+    streets.push(street)
+  } else {
+    street.houses.push(card)
+  }
+})
+---
+
+<!-- 
+  BLOCK
+
+  Поменять значение атрибута api-key на свое.
+
+  Для полноценного функционала этого блока у каждой 
+  карточки дома должны присутствовать атрибуты:
+  data-group="Улица(Значения улиц должны быть такими же как и значения инпутов внутри <radio-buttons></radio-buttons>)"
+  data-address="Полный адрес"
+  data-lat="широта"
+  data-long="долгота"
+-->
+<e-map
+  class="houses"
+  api-key="074c9ab2-5e75-41ba-9b1a-5de6576affc5"
+>
+  <h2
+    class="font-h1 font-mob-h1 houses__heading"
+    set:html={heading}
+  />
+
+  <div class="houses__map-container">
+    <div
+      class="houses__map"
+      id="map"
+    >
+    </div>
+  </div>
+
+  <Portional
+    itemsPerPage={9}
+    class="houses__portional"
+  >
+    <RadioButtons
+      class="houses__radio-buttons"
+      inputs={streets.map((s) => {
+        return { title: s.name, value: s.id }
+      })}
+    />
+
+    <div class="houses__list">
+      {
+        cards.map((card, i) => {
+          return (
+            <TextCard
+              {...omit(card, ['lat', 'long', 'streetId'])}
+              iconPosition="top"
+              icon="logo"
+              class="houses__item__card"
+              data-item
+              aria-hidden={i > 9}
+              class="houses__item"
+              data-group={card.streetId}
+              data-address={card.value}
+              data-lat={card.lat}
+              data-long={card.long}
+            />
+          )
+        })
+      }
+    </div>
+  </Portional>
+</e-map>
+
+<style is:global>
+  .houses {
+    display: flex;
+    flex-direction: column;
+    padding: var(--section-vertical-padding) var(--screen-horisontal-padding);
+    padding-top: 0;
+  }
+
+  .houses__heading {
+    margin-bottom: 5rem;
+
+    @media (max-width: 768px) {
+      margin-bottom: 3rem;
+    }
+  }
+
+  .houses__map-container {
+    width: calc(100% + var(--screen-horisontal-padding) * 2);
+    margin-left: calc(var(--screen-horisontal-padding) * -1);
+    height: 61.9rem;
+    margin-bottom: 10rem;
+
+    background-color: var(--color-highlite);
+
+    @media (max-width: 768px) {
+      height: 36rem;
+      margin-bottom: 5rem;
+    }
+  }
+
+  .houses__map {
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+  }
+
+  .houses__portional {
+    display: block;
+  }
+
+  .houses__radio-buttons {
+    margin-bottom: 10rem;
+
+    @media (max-width: 768px) {
+      margin-bottom: 5rem;
+    }
+  }
+
+  .houses__list {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5rem 8.75rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 100%;
+      gap: 3rem;
+    }
+  }
+
+  .houses__item__card {
+    min-height: 30.5rem;
+
+    justify-content: space-between;
+  }
+</style>
+
+<script>
+  import type { PortionalElement } from '@lib/PortionalElement'
+
+  export class HousesElement extends HTMLElement {
+    #ymaps: any = null
+    #map: any = null
+    #scriptElement: HTMLScriptElement | null = null
+    #portionalElement: PortionalElement | null = null
+
+    protected async connectedCallback() {
+      const apiKey = this.getAttribute('api-key')
+
+      if (!apiKey) {
+        return
+      }
+
+      this.#portionalElement = this.querySelector('e-portional')
+
+      this.#portionalElement?.addEventListener(
+        'portionalItemsChange',
+        this.#portionalChangeListener,
+      )
+
+      this.#scriptElement = document.createElement('script')
+      this.#scriptElement.src = `https://api-maps.yandex.ru/2.1/?apikey=${apiKey}&lang=ru_RU`
+      document.head.appendChild(this.#scriptElement)
+
+      this.#scriptElement.onload = () => {
+        this.#ymaps = (window as any).ymaps
+
+        if (this.#ymaps) {
+          this.#ymaps.ready(() => {
+            this.#map = new this.#ymaps.Map(
+              'map',
+              {
+                center: [55.751574, 37.573856],
+                zoom: 9,
+                behaviors: ['default'],
+              },
+              {
+                searchControlProvider: 'yandex#search',
+              },
+            )
+
+            this.#createCluster()
+
+            this.#map.behaviors.disable('scrollZoom')
+          })
+        }
+      }
+    }
+
+    protected disconnectedCallback() {
+      this.#portionalElement?.removeEventListener(
+        'portionalItemsChange',
+        this.#portionalChangeListener,
+      )
+
+      this.#scriptElement?.remove()
+      this.#map?.destroy()
+      ;(window as any).ymaps = null
+    }
+
+    #createCluster() {
+      if (!this.#map) {
+        return
+      }
+
+      this.#map.geoObjects.removeAll()
+
+      const currentItemElements = this.#portionalElement?.visibleItemElements || []
+
+      const clusterer = new this.#ymaps.Clusterer({
+        preset: 'islands#nightClusterIcons',
+        groupByCoordinates: false,
+        clusterDisableClickZoom: true,
+        clusterHideIconOnBalloonOpen: false,
+        geoObjectHideIconOnBalloonOpen: false,
+      })
+
+      const getPointData = (index: number) => {
+        const item = currentItemElements[index]!
+        const address = item.getAttribute('data-address') || ''
+
+        return {
+          hintContent: address,
+          balloonContentHeader: '<font size=3><b>Адрес:</b></font>',
+          balloonContentBody: `<p>${address}</p>`,
+        }
+      }
+      const getPointOptions = () => {
+        return {
+          preset: 'islands#nightDotIcon',
+          iconLayout: 'default#image',
+          iconImageHref: '/images/icons/location.svg',
+          iconImageSize: [50, 50],
+        }
+      }
+
+      const points = currentItemElements
+        ?.map((item) => {
+          const lat = parseFloat(item.getAttribute('data-lat') || '')
+          const long = parseFloat(item.getAttribute('data-long') || '')
+
+          if (!isNaN(lat) && !isNaN(long)) {
+            return [lat, long]
+          }
+
+          return null
+        })
+        .filter((v) => !!v)
+
+      const geoObjects = []
+
+      for (let i = 0, len = points.length; i < len; i++) {
+        geoObjects[i] = new this.#ymaps.Placemark(points[i], getPointData(i), getPointOptions())
+      }
+
+      clusterer.options.set({
+        gridSize: 80,
+        clusterDisableClickZoom: true,
+      })
+
+      clusterer.add(geoObjects)
+      this.#map.geoObjects.add(clusterer)
+
+      this.#map.setBounds(clusterer.getBounds(), {
+        checkZoomRange: true,
+      })
+    }
+
+    #portionalChangeListener = () => {
+      if (this.#map) {
+        this.#createCluster()
+      }
+    }
+  }
+
+  if (!customElements.get('e-map')) {
+    customElements.define('e-map', HousesElement)
+  }
+
+  declare global {
+    interface HTMLElementTagNameMap {
+      'e-map': HousesElement
+    }
+  }
+</script>
