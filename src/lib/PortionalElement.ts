@@ -32,7 +32,7 @@ export class PortionalElement extends HTMLElement {
       this.#inputGroupValueChangeListener,
     )
 
-    this.#moreButtonElement = document.querySelector('[data-more-button')
+    this.#moreButtonElement = document.querySelector('[data-more-button]')
     this.#moreButtonElement?.addEventListener('click', this.#moreListener)
 
     this.#itemElements = [...this.querySelectorAll<HTMLElement>('[data-item]')]
@@ -68,31 +68,29 @@ export class PortionalElement extends HTMLElement {
   #filter() {
     const pagesItemsLength = this.#page * this.#itemsPerPage
 
-    this.#visibleItemElements = this.#itemElements.filter((element, i) => {
-      element.ariaHidden = 'false'
-
-      let errors = 0
-
-      if (i >= pagesItemsLength) {
-        errors++
-      }
-
+    this.#visibleItemElements = this.#itemElements.filter((element) => {
       if (this.#inputGroupElement) {
         const group = element.getAttribute('data-group')?.trim().toLowerCase()
         const inputValue = this.#inputGroupElement.value.toLocaleLowerCase()
 
         if (inputValue && inputValue !== group) {
-          errors++
+          return false
         }
       }
 
-      if (errors) {
-        element.ariaHidden = 'true'
-      } else {
-        element.ariaHidden = 'false'
-      }
+      return true
+    })
 
-      return errors === 0
+    this.#visibleItemElements = this.#visibleItemElements.filter((_, i) => {
+      return i < pagesItemsLength
+    })
+
+    this.#itemElements.forEach((el) => {
+      if (!this.#visibleItemElements.includes(el)) {
+        el.ariaHidden = 'true'
+      } else {
+        el.ariaHidden = 'false'
+      }
     })
 
     if (this.#moreButtonElement) {

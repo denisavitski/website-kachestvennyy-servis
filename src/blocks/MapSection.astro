@@ -25,71 +25,31 @@ const {
   heading = 'Дома в управлении',
   cards = [
     // Улица 1
-    {
-      title: 'Дом 1',
-      value: 'Улица 1, Дом 1',
+    ...Array.from({ length: 20 }, (_, i) => ({
+      title: `Дом ${i + 1}`,
+      value: `Улица 1, Дом ${i + 1}`,
       streetId: 'Улица 1',
-      lat: 55.831903,
-      long: 37.411961,
-    },
-    {
-      title: 'Дом 2',
-      value: 'Улица 1, Дом 2',
-      streetId: 'Улица 1',
-      lat: 55.763338,
-      long: 37.565466,
-    },
-    {
-      title: 'Дом 3',
-      value: 'Улица 1, Дом 3',
-      streetId: 'Улица 1',
-      lat: 55.744522,
-      long: 37.616378,
-    },
+      lat: 55.831903 + i * 0.001,
+      long: 37.411961 + i * 0.001,
+    })),
+
     // Улица 2
-    {
-      title: 'Дом 1',
-      value: 'Улица 2, Дом 1',
+    ...Array.from({ length: 20 }, (_, i) => ({
+      title: `Дом ${i + 1}`,
+      value: `Улица 2, Дом ${i + 1}`,
       streetId: 'Улица 2',
-      lat: 55.780898,
-      long: 37.642889,
-    },
-    {
-      title: 'Дом 2',
-      value: 'Улица 2, Дом 2',
-      streetId: 'Улица 2',
-      lat: 55.793559,
-      long: 37.435983,
-    },
-    {
-      title: 'Дом 3',
-      value: 'Улица 2, Дом 3',
-      streetId: 'Улица 2',
-      lat: 55.800584,
-      long: 37.675638,
-    },
+      lat: 55.780898 + i * 0.001,
+      long: 37.642889 - i * 0.001,
+    })),
+
     // Улица 3
-    {
-      title: 'Дом 1',
-      value: 'Улица 3, Дом 1',
+    ...Array.from({ length: 20 }, (_, i) => ({
+      title: `Дом ${i + 1}`,
+      value: `Улица 3, Дом ${i + 1}`,
       streetId: 'Улица 3',
-      lat: 55.716733,
-      long: 37.589988,
-    },
-    {
-      title: 'Дом 2',
-      value: 'Улица 3, Дом 2',
-      streetId: 'Улица 3',
-      lat: 55.775724,
-      long: 37.56084,
-    },
-    {
-      title: 'Дом 3',
-      value: 'Улица 3, Дом 3',
-      streetId: 'Улица 3',
-      lat: 55.822144,
-      long: 37.433781,
-    },
+      lat: 55.716733 - i * 0.001,
+      long: 37.589988 + i * 0.001,
+    })),
   ],
 } = Astro.props
 
@@ -311,7 +271,11 @@ cards.forEach((card) => {
 
       this.#map.geoObjects.removeAll()
 
-      const currentItemElements = this.#portionalElement?.visibleItemElements || []
+      const currentItemElements = this.#portionalElement?.visibleItemElements
+
+      if (!currentItemElements?.length) {
+        return
+      }
 
       const clusterer = new this.#ymaps.Clusterer({
         preset: 'islands#nightClusterIcons',
@@ -337,6 +301,7 @@ cards.forEach((card) => {
           iconLayout: 'default#image',
           iconImageHref: '/images/icons/location.svg',
           iconImageSize: [50, 50],
+          iconImageOffset: [-25, -25],
         }
       }
 
